@@ -1,21 +1,23 @@
 import './Bookmark.css'
 
-function App() {
+// Bookmark.jsx
+function Bookmark() {
   return (
     <div className="bookmark-container">
       <div className="add-bookmark">
         <div className="add-bookmark-title">Add a new bookmark</div>
-        <textarea placeholder="Enter bookmark..."></textarea>
+        <textarea placeholder="Enter bookmarks..." />
       </div>
 
       <div className="existing-bookmark">
-        <h3>Your bookmark</h3>
-        {/* bookmark list here */}
+        <h3>Your bookmarks</h3>
+        {/* list here */}
       </div>
     </div>
   )
 }
 
-export default App
+
+export default Bookmark
 
 

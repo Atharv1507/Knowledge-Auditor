@@ -1,37 +1,3 @@
-:root {
---bg: #C9C1B8;
---card: #F3ECDC;
---text: #2D2A26;
---primary: #B85C38;
---accent: #7A8450;
-
-  --border-subtle: rgba(237, 233, 254, 0.12);
-  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --textarea-border-soft: rgba(139, 92, 246, 0.6);
-  --placeholder: rgba(237, 233, 254, 0.5);
-}
-
-
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.app-root {
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  padding: 16px;
-  box-sizing: border-box;
-  background-color: var(--bg);
-}
-
 .bookmark-container {
   flex: 1;
   max-width: 400px;
@@ -45,6 +11,7 @@ body,
   color: var(--text);
 }
 
+/* Top: add bookmark */
 .add-bookmark {
   flex-shrink: 0;
   padding: 20px 20px 14px;
@@ -85,15 +52,36 @@ body,
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 70%, transparent);
 }
 
+/* Bottom: existing bookmark */
+.existing-bookmark {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
 .existing-bookmark h3 {
+  margin: 0 0 14px 0;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text);
 }
 
+.existing-bookmark-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .existing-bookmark-item {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--primary) 60%, transparent),
     color-mix(in srgb, var(--accent) 60%, transparent)
   );
+  font-size: 14px;
   color: var(--text);
 }

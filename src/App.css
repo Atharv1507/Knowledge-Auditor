@@ -1,16 +1,14 @@
 :root {
---bg: #C9C1B8;
---card: #F3ECDC;
---text: #2D2A26;
---primary: #B85C38;
---accent: #7A8450;
-
+  --bg: #C9C1B8;
+  --card: #F3ECDC;
+  --text: #2D2A26;
+  --primary: #B85C38;
+  --accent: #7A8450;
   --border-subtle: rgba(237, 233, 254, 0.12);
   --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.45);
   --textarea-border-soft: rgba(139, 92, 246, 0.6);
   --placeholder: rgba(237, 233, 254, 0.5);
 }
-
 
 html,
 body,
@@ -24,76 +22,12 @@ body,
 
 .app-root {
   height: 100%;
+  width:100%;
   display: flex;
   flex-direction: row;
   gap: 16px;
+  justify-content:space-around;
   padding: 16px;
   box-sizing: border-box;
   background-color: var(--bg);
-}
-
-.bookmark-container {
-  flex: 1;
-  max-width: 400px;
-  background: var(--card);
-  border-radius: 16px;
-  margin: 0;
-  box-shadow: var(--shadow-strong);
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  color: var(--text);
-}
-
-.add-bookmark {
-  flex-shrink: 0;
-  padding: 20px 20px 14px;
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.add-bookmark-title {
-  font-weight: 500;
-  font-size: 15px;
-  color: var(--text);
-}
-
-.add-bookmark textarea {
-  min-height: 100px;
-  padding: 14px;
-  border: 1px solid var(--textarea-border-soft);
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  resize: vertical;
-  box-sizing: border-box;
-  line-height: 1.45;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  background-color: var(--bg);
-  color: var(--text);
-}
-
-.add-bookmark textarea::placeholder {
-  color: var(--placeholder);
-}
-
-.add-bookmark textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 70%, transparent);
-}
-
-.existing-bookmark h3 {
-  color: var(--text);
-}
-
-.existing-bookmark-item {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary) 60%, transparent),
-    color-mix(in srgb, var(--accent) 60%, transparent)
-  );
-  color: var(--text);
 }
