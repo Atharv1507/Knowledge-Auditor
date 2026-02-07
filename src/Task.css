@@ -100,3 +100,25 @@
   font-size: 14px;
   color: var(--text);
 }
+.primary-button {
+  margin-top: 10px;
+  align-self: flex-end;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--primary);
+  color: var(--card);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.primary-button:hover {
+  background-color: color-mix(in srgb, var(--primary) 85%, #000 15%);
+  transform: translateY(-1px);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+}
