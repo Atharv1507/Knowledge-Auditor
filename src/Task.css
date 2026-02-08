@@ -1,10 +1,9 @@
 :root {
-  --bg: #C9C1B8;
---card: #F3ECDC;
---text: #2D2A26;
---primary: #B85C38;
---accent: #7A8450;
-
+--bg: #2F3E46;
+--card: #354F52;
+--text: #EDEDE9;
+--primary: #84A98C;
+--accent: #CAD2C5;
   --border-subtle: rgba(237, 233, 254, 0.12);
   --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.45);
   --textarea-border-soft: rgba(139, 92, 246, 0.6);
@@ -45,18 +44,20 @@
   flex: 1;
   min-height: 100px;
   padding: 14px;
-  border: 1px solid var(--textarea-border-soft);
+  border: none;
   border-radius: 10px;
   font-size: 14px;
   font-family: inherit;
-  resize: vertical;
+  resize: none;
   box-sizing: border-box;
   line-height: 1.45;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   background-color: var(--bg);
   color: var(--text);
 }
-
+textarea::-webkit-scrollbar {
+  width: 0px;
+}
 .add-task textarea::placeholder {
   color: var(--placeholder);
 }
@@ -121,4 +122,58 @@
 
 .primary-button:active {
   transform: translateY(0);
+}
+.optional-link-input {
+  margin-top: 8px;
+  min-height: 60px;
+  font-size: 13px;
+}
+
+/* Make item clearly clickable */
+.existing-tasks-item {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main line: task text + 'link' badge */
+.task-main-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-text {
+  flex: 1;
+}
+
+.task-has-link {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background-color: var(--primary);
+  color: var(--card);
+}
+
+/* Expanded state styling (optional) */
+.existing-tasks-item.expanded {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary) 60%, transparent),
+    color-mix(in srgb, var(--accent) 60%, transparent)
+  );
+}
+
+.task-link-wrapper {
+  margin-top: 6px;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.task-link-wrapper a {
+  color: var(--primary);
+  text-decoration: underline;
 }

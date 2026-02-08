@@ -8,6 +8,10 @@
   --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.45);
   --textarea-border-soft: rgba(139, 92, 246, 0.6);
   --placeholder: rgba(237, 233, 254, 0.5);
+
+  --btn-radius: 999px;
+  --btn-padding-y: 6px;
+  --btn-padding-x: 14px;
 }
 
 html,
@@ -17,17 +21,52 @@ body,
   margin: 0;
   background-color: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Comfortaa", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
 }
 
 .app-root {
   height: 100%;
-  width:100%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   gap: 16px;
-  justify-content:space-around;
+  justify-content: space-evenly;
   padding: 16px;
   box-sizing: border-box;
   background-color: var(--bg);
+}
+
+/* Shared primary button for both panels */
+.primary-button {
+  appearance: none;
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  background-color: var(--primary);
+  color: var(--card);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-end;
+  margin-top: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  transform: translateY(0);
+  transition:
+    background-color 120ms ease-out,
+    transform 80ms ease-out,
+    box-shadow 120ms ease-out;
+}
+
+.primary-button:hover {
+  background-color: #a54f2f; /* slightly darker primary */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.primary-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
