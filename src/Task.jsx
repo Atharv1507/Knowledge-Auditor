@@ -2,17 +2,19 @@ import { useState } from 'react'
 import './Task.css'
 import {supabase} from './superbaseClient'
 
-async function saveData(taskName,createdAt){
-  const {data,error}=await supabase.from('Tasks').insert([{
-    task:taskName,
-    created_at:createdAt
-  }]).select()
+async function saveData(taskName) {
+  const { data, error } = await supabase
+    .from('Tasks')
+    .insert([{
+      task_ids: String(Date.now()),
+      task: taskName,
+    }])
 
-  if(error){
-    console.log(error)
-    return
+  if (error) {
+    console.error("Supabase Error Details:", error.message, error.details, error.hint);
+    return;
   }
-  console.log("Saved in db")
+  console.log("Saved in db");
 }
 
 function Task() {
@@ -26,10 +28,15 @@ function Task() {
   function handleTaskAdd() {
     const trimmed = taskInput.trim()
     if (!trimmed) return
-    saveData(trimmed,Date.now())
+
+    
+    saveData(trimmed)
+
     setTasks(prev => [
       ...prev,
-      {text:trimmed}
+      {
+        id:String(Date.now()),text:trimmed,
+      }
     ])
     setTaskInput('')
   }
