@@ -1,19 +1,7 @@
-:root {
---bg: #2F3E46;
---card: #354F52;
---text: #EDEDE9;
---primary: #84A98C;
---accent: #CAD2C5;
-  --border-subtle: rgba(237, 233, 254, 0.12);
-  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --textarea-border-soft: rgba(139, 92, 246, 0.6);
-  --placeholder: rgba(237, 233, 254, 0.5);
-}
-
 /* TASK CARD (LEFT OR RIGHT PANEL) */
 .task-container {
   flex: 1;
-  max-width: 400px;
+  max-width: 800px;
   background: var(--card);
   border-radius: 16px;
   margin: 0;
