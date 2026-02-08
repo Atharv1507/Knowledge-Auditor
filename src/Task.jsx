@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './Task.css'
-import {supabase} from './superbaseClient'
+import {supabase} from './supaBaseClient'
 
 async function saveData(taskName) {
   const { data, error } = await supabase
