@@ -1,5 +1,21 @@
 import { useState } from 'react'
 import './Task.css'
+import {supabase} from './supaBaseClient'
+
+async function saveData(taskName) {
+  const { data, error } = await supabase
+    .from('Tasks')
+    .insert([{
+      task_ids: String(Date.now()),
+      task: taskName,
+    }])
+
+  if (error) {
+    console.error("Supabase Error Details:", error.message, error.details, error.hint);
+    return;
+  }
+  console.log("Saved in db");
+}
 
 function Task() {
   const [taskInput, setTaskInput] = useState('')
@@ -13,9 +29,14 @@ function Task() {
     const trimmed = taskInput.trim()
     if (!trimmed) return
 
+    
+    saveData(trimmed)
+
     setTasks(prev => [
       ...prev,
-      { id: Date.now(), text: trimmed }
+      {
+        id:String(Date.now()),text:trimmed,
+      }
     ])
 
     setTaskInput('')
