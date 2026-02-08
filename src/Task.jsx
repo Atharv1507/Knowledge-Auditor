@@ -17,11 +17,12 @@ function Task() {
       ...prev,
       { id: Date.now(), text: trimmed }
     ])
+
     setTaskInput('')
   }
 
   function handleTaskKeyDown(e) {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+    if (e.key === 'Enter') {
       e.preventDefault()
       handleTaskAdd()
     }
@@ -31,13 +32,19 @@ function Task() {
     <div className="task-container">
       <div className="add-task">
         <div className="add-task-title">Add a new task</div>
+
         <textarea
-          placeholder="Type your task... (Ctrl+Enter to add)"
+          placeholder="Type your task..."
           value={taskInput}
           onChange={handleTaskChange}
           onKeyDown={handleTaskKeyDown}
         />
-        <button type="button" className="primary-button" onClick={handleTaskAdd}>
+
+        <button
+          type="button"
+          className="primary-button"
+          onClick={handleTaskAdd}
+        >
           Add task
         </button>
       </div>
