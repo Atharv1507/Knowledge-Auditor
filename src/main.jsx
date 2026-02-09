@@ -4,7 +4,5 @@ import './App.css'
 
 
 createRoot(document.getElementById('root')).render(
-  <div className="app-root">
     <App />
-  </div>
 )

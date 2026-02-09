@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Task.css'
 import {supabase} from './supaBaseClient'
 
@@ -8,40 +8,42 @@ async function saveData(taskName) {
     .insert([{
       task_ids: String(Date.now()),
       task: taskName,
-    }])
-
+    }]).select()
+  
   if (error) {
     console.error("Supabase Error Details:", error.message, error.details, error.hint);
     return;
   }
-  console.log("Saved in db");
 }
 
+async function fetchdata(setTasks){
+    const {data,error}= await supabase.from('Tasks').select();
+    if(error){
+      console.error(error)
+    }
+    else{
+      setTasks(data)
+    }
+}
 function Task() {
   const [taskInput, setTaskInput] = useState('')
   const [tasks, setTasks] = useState([])
+  useEffect(()=>{
+    fetchdata(setTasks)
+  },[])
 
   function handleTaskChange(e) {
     setTaskInput(e.target.value)
   }
 
-  function handleTaskAdd() {
+  async function handleTaskAdd() {
     const trimmed = taskInput.trim()
-    if (!trimmed) return
-
-    
-    saveData(trimmed)
-
-    setTasks(prev => [
-      ...prev,
-      {
-        id:String(Date.now()),text:trimmed,
-      }
-    ])
-
+    if (!trimmed) return  
+    await saveData(trimmed)
+    fetchdata(setTasks)
     setTaskInput('')
   }
-
+  
   function handleTaskKeyDown(e) {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -74,8 +76,8 @@ function Task() {
         <h3>Your tasks</h3>
         <ul className="existing-tasks-list">
           {tasks.map(task => (
-            <li key={task.id} className="existing-tasks-item">
-              {task.text}
+            <li key={task.task_ids} className="existing-tasks-item">
+              {task.task}
             </li>
           ))}
         </ul>

@@ -2,21 +2,23 @@
     import { useRef, useState } from "react";
     import "./auth.css";
 
-    function AuthPage({ Loading, setCurrentUser }) {
+    function AuthPage({ setLoading, setCurrentUser }) {
         const [isSignup, setIfSignup] = useState(true);
         const emailref = useRef();
         const usernameref = useRef();
         const passref = useRef();
+        const fullnameref = useRef();
         
 
         async function handleUser(){
-            Loading(true);
+            setLoading(true);
             if(isSignup){
                 const {data,error}=await supabase.auth.signUp({
                     email:emailref.current.value,
                     password:passref.current.value,
                     options:{
                         data:{
+                            full_name:fullnameref.current.value,
                             display_name: usernameref.current.value
                         }
                     }
@@ -37,7 +39,7 @@
                 })
                 if(!error){
 
-                    Loading(false)
+                    setLoading(false)
                     setCurrentUser(data.user)
                 }
                 
@@ -59,20 +61,26 @@
 
         <form className="authForm" onSubmit={(e)=>{e.preventDefault(); handleUser()}} >
             {isSignup && (
+            <>
+            <div className="inputGroup">
+                <label htmlFor="full_name">Full name</label>
+                <input type="text" id="full_name" ref={fullnameref} placeholder="johndoe" required/>
+            </div>
             <div className="inputGroup">
                 <label htmlFor="username">Username</label>
-                <input type="text" id="username" ref={usernameref} placeholder="johndoe" />
+                <input type="text" id="username" ref={usernameref} placeholder="johndoe2091" required/>
             </div>
+            </>
             )}
 
             <div className="inputGroup">
             <label htmlFor="email">Email Address</label>
-            <input type="email" id="email" ref={emailref} placeholder="name@company.com" />
+            <input type="email" id="email" ref={emailref} placeholder="name@company.com" required/>
             </div>
 
             <div className="inputGroup">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" ref={passref} placeholder="••••••••" />
+            <input type="password" id="password" ref={passref} placeholder="••••••••" required/>
             </div>
 
             <button type="submit" className="authSubmitBtn">

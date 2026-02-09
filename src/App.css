@@ -26,6 +26,16 @@ body,
   font-weight: 300;
   font-style: normal;
 }
+.navBar{
+  padding: 20px;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+}
+.navBar button{
+  align-self: center;
+
+}
 
 .app-root {
   height: 100%;

@@ -1,30 +1,58 @@
-import './App.css'   // global + layout
+import './App.css'
 import Bookmark from './Bookmark.jsx'
 import Task from './Task.jsx'
-import './Bookmark.css'
-import './Task.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react' 
 import AuthPage from './Auth/Authpage.jsx'
+import { supabase } from './supaBaseClient' 
 
 function App() {
-  const[loading,setLoading]=useState(false)
-  const [currentUser,setCurrentUser]=useState(null)
+  const [loading, setLoading] = useState(true) 
+  const [currentUser, setCurrentUser] = useState(null)
 
-  if(currentUser && !loading){
-    console.log(currentUser)
-      return(
-      <div className="app-root">
-      <Task />
-      <Bookmark />
-      </div>
-      )
+  useEffect(() => {
+    // 1. Check for existing session in LocalStorage
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      setCurrentUser(session?.user ?? null)
+      setLoading(false)
+    }
+
+    getSession()
+
+    // 2. Listen for auth changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe() // Cleanup
+  }, [])
+
+  if (loading) {
+    return <div className="loading-spinner">Loading your workspace...</div>
   }
-  else{
-    return (
-      <AuthPage Loading={setLoading} setCurrentUser={setCurrentUser}/>
-      
+
+  if (currentUser) {
+    return (<>
+        <div className="navBar">
+          <div>
+          <h1>Knowledge Auditor</h1>
+          <h3>Welcome {currentUser.user_metadata?.display_name|| 'User'}</h3>
+          </div>
+          <button className="primary-button"onClick={() => supabase.auth.signOut()}>Sign Out</button>
+        </div>
+      <div className="app-root">
+        {/* Pass user so Task.jsx can link data to their ID */}
+        <Task user={currentUser} />
+        <Bookmark user={currentUser} />
+      </div>
+    </>
     )
   }
+
+  return (
+    <AuthPage setLoading={setLoading} setCurrentUser={setCurrentUser} />
+  )
 }
 
 export default App
