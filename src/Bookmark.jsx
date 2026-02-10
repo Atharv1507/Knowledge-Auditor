@@ -1,28 +1,49 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './Bookmark.css'
+import { supabase } from './supaBaseClient';
+
+async function saveData(url_) {
+  const { data, error } = await supabase
+    .from('Bookmarks')
+    .insert([{
+      url: url_
+    }]).select()
+  
+  if (error) {
+    console.error("Supabase Error Details:", error.message, error.details, error.hint);
+    return;
+  }
+}
+async function fetchData(setList){
+    const {data,error}= await supabase.from('Bookmarks').select();
+    if(error){
+      console.error(error)
+    }
+    else{
+      setList(data)
+    }
+}
 
 function Bookmark() {
   // text in the textarea
   const [text, setText] = useState('')
   // list of all bookmarks
   const [list, setList] = useState([])
-
+  useEffect(()=>{
+    fetchData(setList)
+  },[])
   function handleChange(event) {
     setText(event.target.value)
   }
 
-  function addBookmark() {
+  async function addBookmark() {
     const trimmed = text.trim()
     if (trimmed === '') {
       return
     }
 
-    const newBookmark = {
-      id: Date.now(),
-      text: trimmed
-    }
-
-    setList([...list, newBookmark])
+    await saveData(trimmed);
+    fetchData(setList)
     setText('')
   }
 
@@ -58,8 +79,8 @@ function Bookmark() {
         <h3>Your bookmarks</h3>
         <ul className="existing-bookmark-list">
           {list.map((item) => (
-            <li key={item.id} className="existing-bookmark-item">
-              {item.text}
+            <li key={item.url_id} className="existing-bookmark-item">
+              {item.url}
             </li>
           ))}
         </ul>

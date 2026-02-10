@@ -6,7 +6,6 @@ async function saveData(taskName) {
   const { data, error } = await supabase
     .from('Tasks')
     .insert([{
-      task_ids: String(Date.now()),
       task: taskName,
     }]).select()
   
