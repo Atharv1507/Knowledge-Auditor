@@ -34,7 +34,7 @@ function App() {
 
   if (currentUser) {
     return (<>
-        <div className="navBar">
+          <div className="navBar">
           <div>
           <h1>Knowledge Auditor</h1>
           <h3>Welcome {currentUser.user_metadata?.display_name|| 'User'}</h3>
@@ -42,7 +42,6 @@ function App() {
           <button className="primary-button"onClick={() => supabase.auth.signOut()}>Sign Out</button>
         </div>
       <div className="app-root">
-        {/* Pass user so Task.jsx can link data to their ID */}
         <Task user={currentUser} />
         <Bookmark user={currentUser} />
       </div>

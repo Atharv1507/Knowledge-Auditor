@@ -2,7 +2,7 @@
 .task-container {
   flex: 1;
   max-width: 800px;
-  background: var(--card);
+  /* border: 5px solid white; */
   border-radius: 16px;
   margin: 0;
   box-shadow: var(--shadow-strong);
@@ -12,61 +12,26 @@
   color: var(--text);
 }
 
-/* Top: add task */
-.add-task {
-  flex-shrink: 0;
-  padding: 20px 20px 14px;
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.add-task-title {
-  font-weight: 500;
-  font-size: 15px;
-  color: var(--text);
-}
-
-.add-task textarea {
-  flex: 1;
-  min-height: 100px;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-family: inherit;
-  resize: none;
-  box-sizing: border-box;
-  line-height: 1.45;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  background-color: var(--bg);
-  color: var(--text);
-}
-textarea::-webkit-scrollbar {
-  width: 0px;
-}
-.add-task textarea::placeholder {
-  color: var(--placeholder);
-}
-
-.add-task textarea:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 70%, transparent);
+#add-task-btn{
+  border-radius: 30px;
+  width: 80%;
+  font-size: 1em;
+  padding: 20px;
+  align-self: center;
 }
 
 /* Bottom: existing tasks */
 .existing-tasks {
-  flex: 1;
+  text-align: center;
   padding: 20px;
-  overflow-y: auto;
+
+  overflow-y: scroll;
   box-sizing: border-box;
 }
 
 .existing-tasks h3 {
   margin: 0 0 14px 0;
-  font-size: 15px;
+  font-size: 1.4em;
   font-weight: 600;
   color: var(--text);
 }
@@ -78,15 +43,11 @@ textarea::-webkit-scrollbar {
 }
 
 .existing-tasks-item {
-  padding: 8px 10px;
+  padding: 12px 10px;
   margin-bottom: 8px;
   border-radius: 8px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary) 60%, transparent),
-    color-mix(in srgb, var(--accent) 60%, transparent)
-  );
-  font-size: 14px;
+  background:var(--card);
+  font-size: 1em;
   color: var(--text);
 }
 .primary-button {
@@ -124,44 +85,101 @@ textarea::-webkit-scrollbar {
   flex-direction: column;
 }
 
-/* Main line: task text + 'link' badge */
-.task-main-line {
+/* Task Modal */
+.task-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
+  backdrop-filter: blur(100px);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
-.task-text {
-  flex: 1;
+.taskForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+  height: auto;
 }
 
-.task-has-link {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background-color: var(--primary);
-  color: var(--card);
+.taskHeader{
+  display: flex;
+  gap:20px;
+  margin-bottom: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+#exit{
+  height:50px;
+  width: 50px;
+  background: none;
+  border:none;
+  color: white;
+  font-size: 20px;
+  cursor:pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%
+}
+#exit:hover{
+  background-color: red;
 }
 
-/* Expanded state styling (optional) */
-.existing-tasks-item.expanded {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary) 60%, transparent),
-    color-mix(in srgb, var(--accent) 60%, transparent)
-  );
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.task-link-wrapper {
-  margin-top: 6px;
-  font-size: 12px;
-  word-break: break-all;
-}
-
-.task-link-wrapper a {
+.inputGroup label {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--primary);
-  text-decoration: underline;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
+
+.taskForm input,#details,#priority{
+  background-color: var(--accent);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.taskForm input:focus,#details:focus,#priority:focus {
+  outline: none;
+  border-color: var(--textarea-border-soft);
+  background-color: rgba(76, 86, 97, 0.8);
+}
+
+.taskSubmitBtn {
+  background-color: var(--primary);
+  color: var(--bg);
+  border: none;
+  border-radius: var(--btn-radius);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 1rem;
+  height: 48px;
+}
+
+.taskSubmitBtn:active {
+  transform: scale(0.98);
+}
+
+
+

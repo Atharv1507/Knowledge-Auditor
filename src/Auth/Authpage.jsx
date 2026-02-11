@@ -24,11 +24,12 @@
                     }
                 })
                 if(!error){
-                 alert("User made confirm Email and login")
+                    return
                 }
                 if(error){
                     alert(error.message)
                     console.error(error.message)
+                    window.location.reload()
                     return
                 }
             }
@@ -38,7 +39,8 @@
                     password:passref.current.value
                 })
                 if(!error){
-
+                    
+          
                     setLoading(false)
                     setCurrentUser(data.user)
                 }

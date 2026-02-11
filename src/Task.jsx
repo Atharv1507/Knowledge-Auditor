@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react'
 import './Task.css'
 import {supabase} from './supaBaseClient'
+import TaskModal from './TaskModal'
 
-async function saveData(taskName) {
-  const { data, error } = await supabase
-    .from('Tasks')
-    .insert([{
-      task: taskName,
-    }]).select()
-  
-  if (error) {
-    console.error("Supabase Error Details:", error.message, error.details, error.hint);
-    return;
-  }
-}
+
 
 async function fetchdata(setTasks){
     const {data,error}= await supabase.from('Tasks').select();
@@ -25,60 +15,44 @@ async function fetchdata(setTasks){
     }
 }
 function Task() {
-  const [taskInput, setTaskInput] = useState('')
   const [tasks, setTasks] = useState([])
+  const [showTaskModal,setTaskModal]=useState(false);
+
+
   useEffect(()=>{
     fetchdata(setTasks)
-  },[])
+    console.log("fetch data ran")
+  },[showTaskModal])
 
-  function handleTaskChange(e) {
-    setTaskInput(e.target.value)
-  }
 
   async function handleTaskAdd() {
-    const trimmed = taskInput.trim()
-    if (!trimmed) return  
-    await saveData(trimmed)
-    fetchdata(setTasks)
-    setTaskInput('')
+    setTaskModal(true) ;
   }
   
-  function handleTaskKeyDown(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleTaskAdd()
-    }
-  }
 
   return (
     <div className="task-container">
-      <div className="add-task">
-        <div className="add-task-title">Add a new task</div>
-
-        <textarea
-          placeholder="Type your task..."
-          value={taskInput}
-          onChange={handleTaskChange}
-          onKeyDown={handleTaskKeyDown}
-        />
-
-        <button
+      
+      <button
           type="button"
           className="primary-button"
+          id='add-task-btn'
           onClick={handleTaskAdd}
-        >
-          Add task
-        </button>
-      </div>
+        >Add a new Task</button>
+
+       {showTaskModal && (<TaskModal setTaskModal={setTaskModal}/>)}
 
       <div className="existing-tasks">
         <h3>Your tasks</h3>
         <ul className="existing-tasks-list">
           {tasks.map(task => (
-            <li key={task.task_ids} className="existing-tasks-item">
+            <li key={task.proj_id} className="existing-tasks-item">
               {task.task}
             </li>
           ))}
+          <li className="existing-tasks-item">
+              task.task
+            </li>
         </ul>
       </div>
     </div>

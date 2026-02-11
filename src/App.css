@@ -1,16 +1,14 @@
+
 :root {
-  --bg: #2E3338;
-  --card: #3A4046;
-  --text: #D6DBDF;
-  --primary: #8FA3B8;
-  --accent: #4C5661;
-  --border-subtle: rgba(237, 233, 254, 0.12);
-  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.45);
-  --textarea-border-soft: rgba(139, 92, 246, 0.6);
-  --placeholder: rgba(237, 233, 254, 0.5);
-  --btn-radius: 999px;
-  --btn-padding-y: 6px;
-  --btn-padding-x: 14px;
+  --bg: #0B0C0E;           /* Deep Obsidian */
+  --card: #16171A;         /* Surface elevation */
+  --text: #E3E4E6;         /* Chalk White */
+  --primary: #FFFFFF;      /* High-contrast action */
+  --accent: #232529;       /* Secondary UI (inputs/hover) */
+  --border: #2A2C30;       /* Low-profile divider */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --btn-radius: 6px;
+  --placeholder: rgb(125, 125, 125);
 }
 
 
@@ -28,6 +26,10 @@ body,
 }
 .navBar{
   padding: 20px;
+  z-index: 1;
+  position: sticky;
+
+  margin: auto;
   align-items: center;
   justify-content: space-between;
   display: flex;
@@ -38,7 +40,7 @@ body,
 }
 
 .app-root {
-  height: 100%;
+  height: auto;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -69,7 +71,7 @@ body,
     background-color 120ms ease-out,
     transform 80ms ease-out,
     box-shadow 120ms ease-out;
-}
+    }
 
 .primary-button:hover {
   background-color: #a54f2f; /* slightly darker primary */

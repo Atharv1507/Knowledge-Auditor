@@ -9,6 +9,7 @@
   flex-direction: column;
   box-sizing: border-box;
   color: var(--text);
+  height:auto;
   transition: all 100ms ease-in;
 }
 .bookmark-container:hover{
