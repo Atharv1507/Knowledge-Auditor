@@ -12,11 +12,6 @@
   height:auto;
   transition: all 100ms ease-in;
 }
-.bookmark-container:hover{
-  transform: translateY(-3px);
-  transform: scale(2000px);
-
-}
 
 /* Top: add bookmark */
 .add-bookmark {

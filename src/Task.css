@@ -19,22 +19,18 @@
   padding: 20px;
   align-self: center;
 }
+#add-task-btn:hover{
+  transform: translateY(-5px);
+}
 
 /* Bottom: existing tasks */
 .existing-tasks {
   text-align: center;
   padding: 20px;
-
-  overflow-y: scroll;
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
-.existing-tasks h3 {
-  margin: 0 0 14px 0;
-  font-size: 1.4em;
-  font-weight: 600;
-  color: var(--text);
-}
 
 .existing-tasks-list {
   list-style: none;
@@ -43,13 +39,52 @@
 }
 
 .existing-tasks-item {
-  padding: 12px 10px;
+  text-align: start;
+  padding: 15px 20px;
   margin-bottom: 8px;
   border-radius: 8px;
   background:var(--card);
   font-size: 1em;
   color: var(--text);
+  transition: all 0.2s ease-in-out;
 }
+.existing-tasks-item:hover{
+  filter: brightness(1.2);
+  transform: translateX(5px);
+}
+.task-item-header{
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.task-item-header h3{
+  text-align: start;
+  font-size: 1.4em;
+  font-weight: 600;
+  margin: 0;
+  display: inline;
+  color: var(--text);
+}
+.task-item-header p{
+  text-align:end;
+  margin: 0;
+}
+
+.task-item-values{
+  display: flex;
+  flex-direction: column;
+}
+.task-item-date p{
+  color:var(--placeholder);
+  text-align: end;
+  margin-bottom: 10px;
+}
+
+
+
+
+/* Primary Button styles */
 .primary-button {
   margin-top: 10px;
   align-self: flex-end;
@@ -66,6 +101,7 @@
 
 .primary-button:hover {
   background-color: color-mix(in srgb, var(--primary) 85%, #000 15%);
+
   transform: translateY(-1px);
 }
 
@@ -129,7 +165,9 @@
   border-radius: 50%
 }
 #exit:hover{
-  background-color: red;
+  transform:translateY(5px);
+  background-color: white;
+  color:black;
 }
 
 .inputGroup {
@@ -175,10 +213,17 @@
   cursor: pointer;
   margin-top: 1rem;
   height: 48px;
+  transition: all 0.2s ease-in-out;
 }
+.taskSubmitBtn:hover{
+  filter: brightness(0.8);
 
+}
 .taskSubmitBtn:active {
   transform: scale(0.98);
+}
+.taskSubmitBtn:focus{
+  outline: none;
 }
 
 

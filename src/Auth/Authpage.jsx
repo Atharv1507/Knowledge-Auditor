@@ -39,14 +39,13 @@
                     password:passref.current.value
                 })
                 if(!error){
-                    
-          
                     setLoading(false)
                     setCurrentUser(data.user)
                 }
                 
                 if(error){
                     alert(error.message)
+                    window.location.reload()
                     return
                 }
             }

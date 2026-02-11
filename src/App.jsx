@@ -37,7 +37,7 @@ function App() {
           <div className="navBar">
           <div>
           <h1>Knowledge Auditor</h1>
-          <h3>Welcome {currentUser.user_metadata?.display_name|| 'User'}</h3>
+          <h3>Welcome, {currentUser.user_metadata?.full_name|| 'User'}</h3>
           </div>
           <button className="primary-button"onClick={() => supabase.auth.signOut()}>Sign Out</button>
         </div>
