@@ -13,9 +13,8 @@ async function fetchdata(setTasks, setProjs) {
     setProjs(data);
   }
 }
-
+ 
  async function handelDel(id, title) {
-  // 1. Fetch the specific row
   const { data, error } = await supabase
     .from('Tasks')
     .select('links')

@@ -43,11 +43,11 @@ generationConfig: {
   responseMimeType: "application/json",
   temperature: 0,
   responseSchema: {
-    type: "ARRAY", // Change root to Array
+    type: "ARRAY",
     items: {
       type: "OBJECT",
       properties: {
-        projectId: { type: "STRING" }, // Static key
+        projectId: { type: "STRING" },
         relevantUrls: { 
           type: "ARRAY", 
           items: { type: "STRING" } 
@@ -107,7 +107,6 @@ const listModels = async () => {
 
 
 async function setRelevantLinks(matches, getTitleByUrl) {
-  // matches is the Array from Gemini: [{projectId, relevantUrls}, ...]
   const entries=Object.entries(matches)
   console.log(entries)
   for (const entry of entries) {
