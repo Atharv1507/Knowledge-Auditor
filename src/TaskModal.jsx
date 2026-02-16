@@ -81,7 +81,7 @@ function TaskModal({ setTaskModal }) {
         </div>
 
         <div className="inputGroup">
-          <label htmlFor="password">Select Priority</label>
+          <label htmlFor="priority">Select Priority</label>
           <select name="priority" ref={priorityRef} id="priority">
             <option value="High">High</option>
             <option value="Medium">Medium</option>

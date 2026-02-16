@@ -3,33 +3,73 @@ import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
 
-async function fetchdata(setTasks) {
+async function fetchdata(setTasks, setProjs) {
   const { data, error } = await supabase.from("Tasks").select();
   if (error) {
     console.error(error);
   } else {
+    console.log(data)
     setTasks(data);
+    setProjs(data);
   }
 }
-function Task() {
+
+ async function handelDel(id, title) {
+  // 1. Fetch the specific row
+  const { data, error } = await supabase
+    .from('Tasks')
+    .select('links')
+    .eq("proj_id", id)
+    .single();
+
+  if (error) {
+    console.error("Fetch Error:", error);
+    return;
+  }
+
+
+  let updatedLinks = { ...data.links }; 
+
+  if (updatedLinks && updatedLinks[title]) {
+    delete updatedLinks[title];
+  }
+
+  const finalValue = Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
+
+  const { error: updateError } = await supabase
+    .from('Tasks')
+    .update({ links: finalValue })
+    .eq("proj_id", id);
+
+  if (updateError) {
+    console.error("Delete Error:", updateError);
+  } else {
+    window.location.reload();
+  }
+}
+
+function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
   const [showTaskModal, setTaskModal] = useState(false);
   const [expandId, setExpandId] = useState("");
 
   useEffect(() => {
-    fetchdata(setTasks);
-    console.log("fetch data ran");
+    fetchdata(setTasks, setProjs);
   }, [showTaskModal]);
 
   async function handleTaskAdd() {
     setTaskModal(true);
   }
-  function getPriority(pC){
-    const pColors={"High":"H","Medium":"M","Low":"L"}
+  function getPriority(pC) {
+    const pColors = { High: "H", Medium: "M", Low: "L" };
     return pColors[pC];
   }
-  function getPriorityColor(pC){
-    const pColors={"High":"#ff00004f","Medium":"#ffea0674","Low":"#00ff443c"}
+  function getPriorityColor(pC) {
+    const pColors = {
+      High: "#ff00004f",
+      Medium: "#ffea0674",
+      Low: "#00ff443c",
+    };
     return pColors[pC];
   }
   return (
@@ -57,22 +97,25 @@ function Task() {
                   : setExpandId("");
               }}
               style={{
-                backgroundColor : task.proj_id===expandId ? getPriorityColor(task.priority):'var(--card)'
+                backgroundColor:
+                  task.proj_id === expandId
+                    ? getPriorityColor(task.priority)
+                    : "var(--card)",
               }}
             >
               <div className="task-item-header">
                 <h3>{task.project_name}</h3>
-                <p style={{color:getPriorityColor(task.priority)}}>{getPriority(task.priority)}</p>
+                <p style={{ color: getPriorityColor(task.priority) }}>
+                  {getPriority(task.priority)}
+                </p>
                 {expandId === task.proj_id ? <h3>v</h3> : <h3>&gt;</h3>}
               </div>
 
-              {/* Change: Remove the ternary null check, use style instead */}
               <div
                 className="task-item-values"
                 style={{
                   maxHeight: expandId === task.proj_id ? "300px" : "0px",
                   opacity: expandId === task.proj_id ? 1 : 0,
-                  overflow: "hidden",
                   transition: "all 0.3s ease-in-out",
                 }}
               >
@@ -84,7 +127,34 @@ function Task() {
                     Description : {task.project_details}
                   </div>
                 )}
-                <div className="task-item-links">{/*map links here */}</div>
+                <div>
+                  <ul className="task-item-links">
+                    Relevant Links:
+  { task.links ? Object.entries(task.links).map(([title, url]) => {if(title && url){
+                        return (
+                        <li className="existing-bookmark-item" key={url}>
+                         <p data-id={task.proj_id} data-title={title} onClick={(e,setList)=>{
+                          handelDel(e.target.dataset.id,e.target.dataset.title)
+                         }}>🗑️</p>
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {title}
+                          </a>
+                        </li>
+                      )}else{
+                        return(
+                      <p>No links found</p>
+                    )
+                      }
+                    })
+                    :(
+                      <p>No links found</p>
+                    )}
+                  </ul>
+                </div>
               </div>
             </div>
           ))}

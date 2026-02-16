@@ -74,6 +74,8 @@ body,
     }
 
 .primary-button:hover {
+  transform: translateY(-5px);
+
   background-color: #a54f2f; /* slightly darker primary */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
@@ -81,4 +83,24 @@ body,
 .primary-button:active {
   transform: translateY(1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+.btnContainer{display: flex;
+justify-content: center;}
+
+#callGemini{
+  border-radius: 30px;
+  width: 80%;
+  font-size: 1em;
+
+  padding: 20px;
+  /* align-self: center; */
+}
+
+@media (max-width:500px){
+  .app-root{
+    flex-direction: column;
+  }
+  .task-container{
+    width: 100%;
+  }
 }

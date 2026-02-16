@@ -29,29 +29,24 @@
   color: var(--text);
 }
 
-.add-bookmark textarea {
-  min-height: 100px;
+.add-bookmark  form input {
+  min-height: 20px;
   padding: 14px;
-  border: none;
+  border:none;
   border-radius: 10px;
   font-size: 14px;
   font-family: inherit;
-  resize: vertical;
-  box-sizing: border-box;
-  line-height: 1.45;
+  width: 80%;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   background-color: var(--bg);
   color: var(--text);
-  resize: none;
 }
-textarea::-webkit-scrollbar {
-  width: 0px;
-}
-.add-bookmark textarea::placeholder {
+
+.add-bookmark form input::placeholder {
   color: var(--placeholder);
 }
 
-.add-bookmark textarea:focus {
+.add-bookmark input:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 70%, transparent);
@@ -78,15 +73,26 @@ textarea::-webkit-scrollbar {
   padding: 0;
 }
 
-.existing-bookmark-item {
-  padding: 8px 10px;
+
+.existing-bookmark-item  {
+  background-color: var(--bg);
+  text-align: start;
+  padding: 15px 20px;
   margin-bottom: 8px;
   border-radius: 8px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary) 60%, transparent),
-    color-mix(in srgb, var(--accent) 60%, transparent)
-  );
-  font-size: 14px;
+  display: flex ;
+  gap:20px;
+  overflow-x: scroll;
+  font-size: 1em;
+  color: var(--text);
+  transition: all 0.2s ease-in-out;
+}
+
+.existing-bookmark-item a{
+  text-decoration: none;
+  display: inline;
+  align-self: center;
   color: var(--text);
 }
+
+
