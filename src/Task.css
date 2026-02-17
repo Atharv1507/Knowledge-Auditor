@@ -76,7 +76,6 @@
   display: flex;
   flex-direction: column;
   overflow: scroll;
-  align-items: center;
 
 }
 .task-item-date p{
@@ -245,6 +244,3 @@
 .taskSubmitBtn:focus{
   outline: none;
 }
-
-
-
