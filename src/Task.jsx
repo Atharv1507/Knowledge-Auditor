@@ -85,9 +85,9 @@ function Task({ setProjs }) {
   }
   function getPriorityColor(pC) {
     const pColors = {
-      High: "#ff00004f",
-      Medium: "#ffea0674",
-      Low: "#00ff443c",
+     High:   "#e0575734",
+Medium: "#e3c24d59",
+Low:    "#57b88b51",
     };
     return pColors[pC];
   }
@@ -99,7 +99,7 @@ function Task({ setProjs }) {
         id="add-task-btn"
         onClick={handleTaskAdd}
       >
-        Add a new Task
+        Add a new task
       </button>
 
       {showTaskModal && <TaskModal setTaskModal={setTaskModal} />}
@@ -132,6 +132,7 @@ function Task({ setProjs }) {
                   : setExpandId("");
               }}
               style={{
+                "--accent-bar": getPriorityColor(task.priority),
                 border: "2px dashed transparent",
                 backgroundColor:
                   task.proj_id === expandId
@@ -140,12 +141,27 @@ function Task({ setProjs }) {
               }}
             >
               <div className="task-item-header">
-                <h3>{task.project_name}</h3>
-                <p style={{ color: getPriorityColor(task.priority) }}>
+              <h3>{task.project_name}</h3>
+              <div className="task-item-meta">
+                <span className="priority-badge" style={{ color: getPriorityColor(task.priority) }}>
                   {getPriority(task.priority)}
-                </p>
-                {expandId === task.proj_id ? <h3>v</h3> : <h3>&gt;</h3>}
+                </span>
+                <svg
+                  className={`chevron-icon ${expandId === task.proj_id ? "chevron-open" : ""}`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </div>
+            </div>
 
               <div
                 className="task-item-values"
@@ -173,6 +189,7 @@ function Task({ setProjs }) {
                             <li className="existing-bookmark-item" key={url}>
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 15 15 "
                                 fill="currentColor"
                                 className="trash_icon"
                                 data-id={task.proj_id}

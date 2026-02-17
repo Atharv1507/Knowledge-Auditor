@@ -168,9 +168,9 @@ function Bookmark({ setBookmarkLinks }) {
               style={{ cursor: "grab" }}
             >
             
-              <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="trash_icon" 
+              <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="trash_icon"  viewBox="0 0 15 15 "
               data-id={item.url_id}
-                onClick={(e) => {
+                onClick={(e) => { 
                   handleDel(e.target.dataset.id); 
                 }}
               >
