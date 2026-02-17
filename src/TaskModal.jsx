@@ -10,10 +10,10 @@ function TaskModal({ setTaskModal }) {
 
   async function saveData(projName, date, detail, priorities) {
     const { data, error } = await supabase
-      .from("Tasks")
+      .from("Projects")
       .insert([
         {
-          created_at: date,
+          due_by: date,
           status: false,
           project_name: projName,
           project_details: detail,
@@ -66,8 +66,8 @@ function TaskModal({ setTaskModal }) {
           />
         </div>
         <div className="inputGroup">
-          <label htmlFor="created_on">Created on</label>
-          <input type="date" id="created_on" ref={dateRef} required />
+          <label htmlFor="due_by">Created on</label>
+          <input type="date" id="due_by" ref={dateRef} max={today} defaultValue={today} />
         </div>
 
         <div className="inputGroup">

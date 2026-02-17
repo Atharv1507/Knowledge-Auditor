@@ -5,7 +5,7 @@ import TaskModal from "./TaskModal";
 import { AuthWeakPasswordError } from "@supabase/supabase-js";
 
 async function fetchdata(setTasks, setProjs) {
-  const { data, error } = await supabase.from("Tasks").select();
+  const { data, error } = await supabase.from("Projects").select();
   if (error) {
     console.error(error);
   } else {
@@ -17,7 +17,7 @@ async function fetchdata(setTasks, setProjs) {
 
 async function handelDel(id, title, setTasks, setProjs) {
   const { data, error } = await supabase
-    .from("Tasks")
+    .from("Projects")
     .select("links")
     .eq("proj_id", id)
     .single();
@@ -37,7 +37,7 @@ async function handelDel(id, title, setTasks, setProjs) {
     Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
 
   const { error: updateError } = await supabase
-    .from("Tasks")
+    .from("Projects")
     .update({ links: finalValue })
     .eq("proj_id", id);
 
@@ -56,7 +56,7 @@ async function handleLinkDrop(taskId,rawData,existingLinks,setTasks,setProjs){
   };
 
   const { error } = await supabase
-    .from("Tasks")
+    .from("Projects")
     .update({ links: updatedLinks })
     .eq("proj_id", taskId);
 
