@@ -1,20 +1,20 @@
 
 :root {
-  --bg: #0B0C0E;           /* Deep Obsidian */
-  --card: #16171A;         /* Surface elevation */
-  --text: #E3E4E6;         /* Chalk White */
-  --primary: #FFFFFF;      /* High-contrast action */
-  --accent: #232529;       /* Secondary UI (inputs/hover) */
-  --border: #2A2C30;       /* Low-profile divider */
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --btn-radius: 6px;
-  --placeholder: rgb(125, 125, 125);
+  --bg: #141415;           /* Gunmetal Black */
+  --card: #1C1C1F;         /* Dark Tungsten */
+  --text: #E1E1E3;         /* Steel White */
+  --primary: #CFCFD1;      /* Brushed Metal Action */
+  --accent: #2C2C30;       /* Heavy Metal (inputs/hover) */
+  --border: #3F3F46;       /* Zinc Divider */
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --btn-radius: 4px;
+  --placeholder: #71717A;
 }
 .trash_icon{
   color:var(--primary);
-
   height:25px;
   width:25px;
+  margin-top: 10px;
   align-self: center;
   transition: all 0.2s ease-in-out;
 }

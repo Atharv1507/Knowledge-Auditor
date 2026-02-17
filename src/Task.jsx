@@ -2,22 +2,23 @@ import { useEffect, useState } from "react";
 import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
+import { AuthWeakPasswordError } from "@supabase/supabase-js";
 
 async function fetchdata(setTasks, setProjs) {
   const { data, error } = await supabase.from("Tasks").select();
   if (error) {
     console.error(error);
   } else {
-    console.log(data)
+    console.log(data);
     setTasks(data);
     setProjs(data);
   }
 }
- 
- async function handelDel(id, title) {
+
+async function handelDel(id, title, setTasks, setProjs) {
   const { data, error } = await supabase
-    .from('Tasks')
-    .select('links')
+    .from("Tasks")
+    .select("links")
     .eq("proj_id", id)
     .single();
 
@@ -26,44 +27,43 @@ async function fetchdata(setTasks, setProjs) {
     return;
   }
 
-
-  let updatedLinks = { ...data.links }; 
+  let updatedLinks = { ...data.links };
 
   if (updatedLinks && updatedLinks[title]) {
     delete updatedLinks[title];
   }
 
-  const finalValue = Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
+  const finalValue =
+    Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
 
   const { error: updateError } = await supabase
-    .from('Tasks')
+    .from("Tasks")
     .update({ links: finalValue })
     .eq("proj_id", id);
 
   if (updateError) {
     console.error("Delete Error:", updateError);
   } else {
-    window.location.reload()
+    await fetchdata(setTasks, setProjs);
   }
 }
-async function handleLinkDrop(taskId, rawData, existingLinks,setTasks,setProjs) {
+async function handleLinkDrop(taskId,rawData,existingLinks,setTasks,setProjs){
   const { title, url } = JSON.parse(rawData);
-  
-  // Merge new link into existing links object
-  const updatedLinks = { 
-    ...(existingLinks || {}), 
-    [title]: url 
+
+  const updatedLinks = {
+    ...(existingLinks || {}),
+    [title]: url,
   };
 
   const { error } = await supabase
-    .from('Tasks')
+    .from("Tasks")
     .update({ links: updatedLinks })
     .eq("proj_id", taskId);
 
   if (error) {
     console.error("Error updating links:", error);
   } else {
-    await fetchdata(setTasks,setProjs)
+    await fetchdata(setTasks, setProjs);
   }
 }
 
@@ -71,7 +71,7 @@ function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
   const [showTaskModal, setTaskModal] = useState(false);
   const [expandId, setExpandId] = useState("");
-  const [IsDrop,setIsDrop]=useState(false)
+
   useEffect(() => {
     fetchdata(setTasks, setProjs);
   }, [showTaskModal]);
@@ -111,13 +111,19 @@ function Task({ setProjs }) {
               key={task.proj_id}
               className="existing-tasks-item"
               // 1. Allow dropping
-              onDragOver={(e) => e.preventDefault()} 
+              onDragOver={(e) => e.preventDefault()}
               // 2. Handle the drop
               onDrop={(e) => {
                 e.preventDefault();
                 const data = e.dataTransfer.getData("application/json");
                 if (data) {
-                  handleLinkDrop(task.proj_id, data, task.links,setTasks,setProjs);
+                  handleLinkDrop(
+                    task.proj_id,
+                    data,
+                    task.links,
+                    setTasks,
+                    setProjs,
+                  );
                 }
               }}
               onClick={() => {
@@ -125,7 +131,8 @@ function Task({ setProjs }) {
                   ? setExpandId(task.proj_id)
                   : setExpandId("");
               }}
-              style={{border: '2px dashed transparent',
+              style={{
+                border: "2px dashed transparent",
                 backgroundColor:
                   task.proj_id === expandId
                     ? getPriorityColor(task.priority)
@@ -159,33 +166,43 @@ function Task({ setProjs }) {
                 <div>
                   <ul className="task-item-links">
                     Relevant Links:
-  { task.links ? Object.entries(task.links).map(([title, url]) => {if(title && url){
-                        return (
-                        <li className="existing-bookmark-item" key={url}>
-              <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" className="trash_icon" 
-                          data-id={task.proj_id} data-title={title} onClick={(e,setList)=>{
-                          handelDel(e.target.dataset.id,e.target.dataset.title,setIsDeleting)
-                         }}>
-                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-             
-
-                         </svg>
-                          <a
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {title}
-                          </a>
-                        </li>
-                      )}else{
-                        return(
-                      <p>No links found</p>
-                    )
-                      }
-                    })
-                    :(
+                    {task.links ? (
+                      Object.entries(task.links).map(([title, url]) => {
+                        if (title && url) {
+                          return (
+                            <li className="existing-bookmark-item" key={url}>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                className="trash_icon"
+                                data-id={task.proj_id}
+                                data-title={title}
+                                onClick={(e, setList) => {
+                                  handelDel(
+                                    e.target.dataset.id,
+                                    e.target.dataset.title,
+                                    setTasks,
+                                    setProjs,
+                                  );
+                                }}
+                              >
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                              </svg>
+                              <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {title}
+                              </a>
+                            </li>
+                          );
+                        } else {
+                          return <p>No links found</p>;
+                        }
+                      })
+                    ) : (
                       <p>No links found</p>
                     )}
                   </ul>
