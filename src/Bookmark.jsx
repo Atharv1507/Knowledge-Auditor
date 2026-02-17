@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Bookmark.css'
 import { supabase } from './supaBaseClient';
 
@@ -82,15 +82,16 @@ async function deleteBookmark(urlId) {
     }
 
     else {
+      window.location.reload()
       //trigger confirm modal
 
     }
   }
 function Bookmark({setBookmarkLinks}) {
-  // text in the textarea
   const [text, setText] = useState('')
-  // list of all bookmarks
   const [list, setList] = useState([])
+  const addBookmarkBtn=useRef()
+
   useEffect(()=>{
     fetchData(setList,setBookmarkLinks)
   },[])
@@ -103,12 +104,16 @@ function Bookmark({setBookmarkLinks}) {
 
   async function addBookmark() {
     const trimmed = text.trim()
+    addBookmarkBtn.disabled=true;
     if (trimmed === '') {
       return
     }
     setText('')
     await saveData(trimmed);
-    fetchData(setList,setBookmarkLinks)
+    await fetchData(setList,setBookmarkLinks)
+    addBookmarkBtn.disabled=false;
+
+
   }
 
   function handleKeyDown(event) {
@@ -137,6 +142,7 @@ function Bookmark({setBookmarkLinks}) {
         <button
           type="submit"
           className="primary-button"
+          ref={addBookmarkBtn}
           >
           Add bookmark
         </button>
@@ -149,7 +155,7 @@ function Bookmark({setBookmarkLinks}) {
           {list.map((item) => (
             <div key={item.customKey} className="existing-bookmark-item">
              <a href={item.url} target='_blank'>{item.title} </a>
-             <p data-id={item.url_id} onClick={(e)=>{handleDel(e.target.dataset.id)}}>🗑️</p>
+             <p style={{cursor:'pointer'}} data-id={item.url_id} onClick={(e)=>{handleDel(e.target.dataset.id)}}>🗑️</p>
             </div>
           ))}
         </ul>

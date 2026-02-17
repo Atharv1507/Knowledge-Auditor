@@ -43,7 +43,7 @@ async function fetchdata(setTasks, setProjs) {
   if (updateError) {
     console.error("Delete Error:", updateError);
   } else {
-    window.location.reload();
+    window.location.reload()
   }
 }
 
@@ -51,7 +51,7 @@ function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
   const [showTaskModal, setTaskModal] = useState(false);
   const [expandId, setExpandId] = useState("");
-
+  const [IsDeleting,setIsDeleting]=useState(false)
   useEffect(() => {
     fetchdata(setTasks, setProjs);
   }, [showTaskModal]);
@@ -133,7 +133,7 @@ function Task({ setProjs }) {
                         return (
                         <li className="existing-bookmark-item" key={url}>
                          <p data-id={task.proj_id} data-title={title} onClick={(e,setList)=>{
-                          handelDel(e.target.dataset.id,e.target.dataset.title)
+                          handelDel(e.target.dataset.id,e.target.dataset.title,setIsDeleting)
                          }}>🗑️</p>
                           <a
                             href={url}
