@@ -46,12 +46,32 @@ async function fetchdata(setTasks, setProjs) {
     window.location.reload()
   }
 }
+async function handleLinkDrop(taskId, rawData, existingLinks,setTasks,setProjs) {
+  const { title, url } = JSON.parse(rawData);
+  
+  // Merge new link into existing links object
+  const updatedLinks = { 
+    ...(existingLinks || {}), 
+    [title]: url 
+  };
+
+  const { error } = await supabase
+    .from('Tasks')
+    .update({ links: updatedLinks })
+    .eq("proj_id", taskId);
+
+  if (error) {
+    console.error("Error updating links:", error);
+  } else {
+    await fetchdata(setTasks,setProjs)
+  }
+}
 
 function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
   const [showTaskModal, setTaskModal] = useState(false);
   const [expandId, setExpandId] = useState("");
-  const [IsDeleting,setIsDeleting]=useState(false)
+  const [IsDrop,setIsDrop]=useState(false)
   useEffect(() => {
     fetchdata(setTasks, setProjs);
   }, [showTaskModal]);
@@ -90,12 +110,22 @@ function Task({ setProjs }) {
             <div
               key={task.proj_id}
               className="existing-tasks-item"
+              // 1. Allow dropping
+              onDragOver={(e) => e.preventDefault()} 
+              // 2. Handle the drop
+              onDrop={(e) => {
+                e.preventDefault();
+                const data = e.dataTransfer.getData("application/json");
+                if (data) {
+                  handleLinkDrop(task.proj_id, data, task.links,setTasks,setProjs);
+                }
+              }}
               onClick={() => {
                 expandId !== task.proj_id
                   ? setExpandId(task.proj_id)
                   : setExpandId("");
               }}
-              style={{
+              style={{border: '2px dashed transparent',
                 backgroundColor:
                   task.proj_id === expandId
                     ? getPriorityColor(task.priority)
