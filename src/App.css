@@ -1,31 +1,19 @@
-
 :root {
-  --bg: #141415;           /* Gunmetal Black */
-  --card: #1C1C1F;         /* Dark Tungsten */
-  --text: #E1E1E3;         /* Steel White */
-  --primary: #CFCFD1;      /* Brushed Metal Action */
-  --accent: #2C2C30;       /* Heavy Metal (inputs/hover) */
-  --border: #3F3F46;       /* Zinc Divider */
+  --bg: #141415;
+  --card: #1C1C1F;
+  --text: #E1E1E3;
+  --primary: #CFCFD1;
+  --accent: #2C2C30;
+  --border: #3F3F46;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --btn-radius: 4px;
+  --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --btn-radius: 10px;
   --placeholder: #71717A;
-}
-.trash_icon{
-  color:var(--primary);
-  height:25px;
-  width:25px;
-  margin-top: 5px;
-  padding: 10px;
-  align-self: center;
-  transition: all 0.2s ease-in-out;
-}
-.trash_icon:hover{
-  color:var(--placeholder)
+  --border-subtle: #2a2a2e;
 }
 
-html,
-body,
-#root {
+/* ─── RESET ──────────────────────────────────────────────────────────── */
+html, body, #root {
   height: 100%;
   margin: 0;
   background-color: var(--bg);
@@ -35,83 +23,147 @@ body,
   font-weight: 300;
   font-style: normal;
 }
-.navBar{
-  padding: 20px;
-  z-index: 1;
-  position: sticky;
 
-  margin: auto;
+/* ─── TRASH ICON ─────────────────────────────────────────────────────── */
+.trash_icon {
+  height: 14px;
+  width: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+  color: color-mix(in srgb, var(--text) 30%, transparent);
+  transition: color 0.15s ease, transform 0.15s ease;
+  pointer-events: all;
+  padding: 10px;
+}
+
+.trash_icon:hover {
+  color: #e05757;
+  transform: scale(1.2);
+}
+
+/* ─── SCROLLBARS ─────────────────────────────────────────────────────── */
+.scroll-thin::-webkit-scrollbar { width: 3px; }
+.scroll-thin::-webkit-scrollbar-track { background: transparent; }
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary) 35%, transparent);
+  border-radius: 4px;
+}
+
+/* ─── SECTION HEADER ─────────────────────────────────────────────────── */
+.section-header {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--placeholder);
+  margin: 16px 0 14px;
+}
+
+/* ─── PRIMARY BUTTON ─────────────────────────────────────────────────── */
+.primary-button {
+  appearance: none;
+  border: none;
+  border-bottom: 3px solid color-mix(in srgb, var(--primary) 60%, #000 40%);
+  border-radius: var(--btn-radius);
+  padding: 9px 18px;
+  background-color: var(--primary);
+  color: var(--card);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0;
+  transform: translateY(0);
+  transition: transform 0.1s ease, border-bottom-width 0.1s ease;
+}
+
+.primary-button:hover {
+  transform: translateY(-3px);
+  border-bottom-width: 4px;
+}
+
+.primary-button:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+/* ─── NAVBAR ─────────────────────────────────────────────────────────── */
+.navBar {
+  padding: 18px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  display: flex;
-}
-.navBar button{
-  align-self: center;
-
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
+.navBar div h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.navBar div h3 {
+  margin: 2px 0 0;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--placeholder);
+}
+
+.title-accent {
+  color: var(--primary);
+  opacity: 0.6;
+}
+
+/* ─── APP ROOT ───────────────────────────────────────────────────────── */
 .app-root {
-  height: auto;
   width: 100%;
   display: flex;
   flex-direction: row;
   gap: 16px;
   justify-content: space-evenly;
-  padding: 16px;
+  padding: 20px 20px 8px;
   box-sizing: border-box;
-  background-color: var(--bg);
 }
 
-/* Shared primary button for both panels */
-.primary-button {
-  appearance: none;
-  border: none;
-  border-radius: var(--btn-radius);
-  padding: var(--btn-padding-y) var(--btn-padding-x);
-  background-color: var(--primary);
-  color: var(--card);
-  font-family: inherit;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  align-self: flex-end;
-  margin-top: 10px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-  transform: translateY(0);
-  transition:
-    background-color 120ms ease-out,
-    transform 80ms ease-out,
-    box-shadow 120ms ease-out;
-    }
-
-.primary-button:hover {
-  transform: translateY(-5px);
-
-  background-color: #a54f2f; /* slightly darker primary */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+/* ─── MAP LINKS CONTAINER ────────────────────────────────────────────── */
+.btnContainer {
+  display: flex;
+  justify-content: center;
+  padding: 16px 20px 28px;
 }
 
-.primary-button:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-.btnContainer{display: flex;
-justify-content: center;}
-
-#callGemini{
-  border-radius: 30px;
-  width: 80%;
-  font-size: 1em;
-
-  padding: 20px;
-  /* align-self: center; */
+#callGemini {
+  padding: 12px 32px;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
 }
 
-@media (max-width:500px){
-  .app-root{
+/* ─── LOADING STATE ──────────────────────────────────────────────────── */
+.loading-spinner {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--placeholder);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .app-root {
     flex-direction: column;
+    padding: 12px;
   }
-  .task-container{
-    width: 100%;
-  }
+  .task-container { width: 100%; }
+  #callGemini { width: 90%; }
+  .navBar { padding: 14px 16px; }
 }

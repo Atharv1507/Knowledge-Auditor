@@ -10,8 +10,8 @@
   box-sizing: border-box;
   color: var(--text);
   background: var(--card);
-  gap: 12px;                  /* ← add gap between button and the tasks box */
-  padding: 16px; 
+  gap: 12px;
+  padding: 16px;
 }
 
 /* ─── ADD TASK BUTTON ────────────────────────────────────────────────── */
@@ -24,8 +24,6 @@
   letter-spacing: 0.03em;
   font-weight: 600;
   margin-bottom: 16px;
-
-  /* The "front face" effect */
   border: none;
   border-bottom: 3px solid color-mix(in srgb, var(--primary) 60%, #000 40%);
   transform: translateY(0px);
@@ -48,7 +46,6 @@
   padding: 4px 20px 20px;
   overflow-y: auto;
   box-sizing: border-box;
-  /* card feel: slight inner separation */
   background: color-mix(in srgb, var(--card) 96%, var(--text) 4%);
   border-radius: 20px;
   flex: 1;
@@ -84,7 +81,6 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  /* use a CSS variable for the accent bar color, overridden inline */
   --accent-bar: var(--primary);
   border: 1.5px solid transparent;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
@@ -97,7 +93,6 @@
   overflow: hidden;
 }
 
-/* Left accent bar — priority-colored on hover */
 .existing-tasks-item::before {
   content: "";
   position: absolute;
@@ -141,7 +136,6 @@
   text-overflow: ellipsis;
 }
 
-/* Right side: priority badge + chevron together */
 .task-item-meta {
   display: flex;
   align-items: center;
@@ -224,80 +218,6 @@
   color: var(--text);
 }
 
-/* ─── INDIVIDUAL LINK ITEM ───────────────────────────────────────────── */
-.existing-bookmark-item {
-  display: flex;
-  align-items: center;
-  /* gap: 10px; */
-  padding: 7px 10px;
-  margin-top: 5px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--primary) 7%, transparent);
-  border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.existing-bookmark-item:hover {
-  background: color-mix(in srgb, var(--primary) 15%, transparent);
-  transform: translateX(3px);
-}
-
-.existing-bookmark-item a {
-  font-size: 0.87rem;
-  font-weight: 500;
-  text-decoration: none;
-  color: var(--text) !important;
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color 0.15s ease;
-}
-
-.existing-bookmark-item a:hover {
-  color: var(--primary) !important;
-  text-decoration: underline;
-}
-
-/* ─── TRASH ICON ─────────────────────────────────────────────────────── */
-.trash_icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  cursor: pointer;
-  color: color-mix(in srgb, var(--text) 30%, transparent);
-  transition: color 0.15s ease, transform 0.15s ease;
-  pointer-events: all;
-}
-
-.trash_icon:hover {
-  color: #e05757;
-  transform: scale(1.2);
-}
-
-/* ─── PRIMARY BUTTON ─────────────────────────────────────────────────── */
-.primary-button {
-  margin-top: 10px;
-  align-self: flex-end;
-  padding: 7px 14px;
-  border-radius: 999px;
-  border: none;
-  background-color: var(--primary);
-  color: var(--card);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-}
-
-.primary-button:hover {
-  background-color: color-mix(in srgb, var(--primary) 85%, #000 15%);
-  transform: translateY(-2px);
-}
-
-.primary-button:active {
-  transform: translateY(0);
-}
 
 .optional-link-input {
   margin-top: 8px;
@@ -415,46 +335,29 @@
   background: var(--primary);
   color: var(--bg);
   border: none;
-  border-radius: var(--btn-radius, 10px);
-  padding: var(--btn-padding-y, 12px) var(--btn-padding-x, 20px);
+  border-bottom: 3px solid color-mix(in srgb, var(--primary) 60%, #000 40%);
+  border-radius: var(--btn-radius, 999px);
+  padding: 12px 20px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 0.5rem;
   height: 48px;
   letter-spacing: 0.02em;
-  transition: all 0.2s ease-in-out;
+  font-family: inherit;
+  transition: transform 0.1s ease, border-bottom-width 0.1s ease;
 }
 
 .taskSubmitBtn:hover {
-  filter: brightness(0.88);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-bottom-width: 4px;
 }
 
 .taskSubmitBtn:active {
-  transform: scale(0.98) translateY(0);
+  transform: translateY(3px);
+  border-bottom-width: 1px;
 }
 
 .taskSubmitBtn:focus {
   outline: none;
-}
-
-/* ─── CUSTOM SCROLLBAR ───────────────────────────────────────────────── */
-.existing-tasks::-webkit-scrollbar,
-.task-item-values::-webkit-scrollbar,
-.task-item-links::-webkit-scrollbar {
-  width: 3px;
-}
-
-.existing-tasks::-webkit-scrollbar-track,
-.task-item-values::-webkit-scrollbar-track,
-.task-item-links::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.existing-tasks::-webkit-scrollbar-thumb,
-.task-item-values::-webkit-scrollbar-thumb,
-.task-item-links::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 35%, transparent);
-  border-radius: 4px;
 }

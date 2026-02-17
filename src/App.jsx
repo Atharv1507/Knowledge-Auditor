@@ -170,7 +170,7 @@ function App() {
       <>
         <div className="navBar">
           <div>
-            <h1>Knowledge Auditor</h1>
+            <h1>Knowledge <span className="title-accent">auditor</span></h1>
             <h3>Welcome, {currentUser.user_metadata?.full_name || "User"}</h3>
           </div>
 

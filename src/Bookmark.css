@@ -34,7 +34,7 @@
 .add-bookmark form {
   display: flex;
   gap: 10px;
-  align-items: center;
+  align-items: stretch;
 }
 
 .add-bookmark form input {
@@ -59,31 +59,10 @@
   border-color: var(--primary);
 }
 
-/* ─── ADD BOOKMARK BUTTON ────────────────────────────────────────────── */
 .add-bookmark .primary-button {
   flex-shrink: 0;
-  padding: 10px 18px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-radius: 10px;
-  border: none;
-  border-bottom: 3px solid color-mix(in srgb, var(--primary) 60%, #000 40%);
-  background-color: var(--primary);
-  color: var(--card);
-  cursor: pointer;
+  padding: 0 18px;
   margin: 0;
-  transition: transform 0.1s ease, border-bottom 0.1s ease;
-  transform: translateY(0px);
-}
-
-.add-bookmark .primary-button:hover {
-  transform: translateY(-3px);
-  border-bottom-width: 4px;
-}
-
-.add-bookmark .primary-button:active {
-  transform: translateY(3px);
-  border-bottom-width: 1px;
 }
 
 /* ─── EXISTING BOOKMARKS SECTION ─────────────────────────────────────── */
@@ -97,12 +76,11 @@
 }
 
 .existing-bookmark h3 {
-  margin: 0 0 14px 0;
+  margin: 16px 0 14px;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--placeholder);
-  margin-top: 16px;
   text-align: center;
 }
 
@@ -117,20 +95,23 @@
 
 /* ─── BOOKMARK ITEM ──────────────────────────────────────────────────── */
 .existing-bookmark-item {
-  background-color: var(--card);
+  background: color-mix(in srgb, var(--primary) 7%, transparent);
   text-align: start;
-  padding: 10px 14px;
-  margin-bottom: 0;
+  padding: 5px;
+  margin-top: 5px;
+  /* 8px */
   border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 12px;
   font-size: 0.9em;
   color: var(--text);
-  border: 1.5px solid transparent;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   cursor: grab;
   position: relative;
+  transition: background 0.15s ease, transform 0.15s ease;
+  border: 1px solid color-mix(in srgb, var(--primary) 15%, transparent);
+
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
@@ -150,9 +131,8 @@
 }
 
 .existing-bookmark-item:hover {
-  transform: translateX(5px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
-  border-color: color-mix(in srgb, var(--primary) 25%, transparent);
+   background: color-mix(in srgb, var(--primary) 15%, transparent);
+  transform: translateX(3px);
 }
 
 .existing-bookmark-item:hover::before {
@@ -160,71 +140,18 @@
 }
 
 .existing-bookmark-item a {
+  font-size: 0.87rem;
+  font-weight: 500;
   text-decoration: none;
-  color: var(--text);
+  color: var(--text) !important;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.88rem;
-  font-weight: 500;
   transition: color 0.15s ease;
 }
 
 .existing-bookmark-item a:hover {
-  color: var(--primary);
-}
-
-/* ─── TRASH ICON ─────────────────────────────────────────────────────── */
-.trash_icon {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  cursor: pointer;
-  color: color-mix(in srgb, var(--text) 30%, transparent);
-  transition: color 0.15s ease, transform 0.15s ease;
-  pointer-events: all;
-}
-
-.trash_icon:hover {
-  color: #e05757;
-  transform: scale(1.2);
-}
-
-/* ─── PRIMARY BUTTON (global fallback) ───────────────────────────────── */
-.primary-button {
-  margin-top: 10px;
-  align-self: flex-end;
-  padding: 7px 14px;
-  border-radius: 999px;
-  border: none;
-  background-color: var(--primary);
-  color: var(--card);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-}
-
-.primary-button:hover {
-  background-color: color-mix(in srgb, var(--primary) 85%, #000 15%);
-  transform: translateY(-2px);
-}
-
-.primary-button:active {
-  transform: translateY(0);
-}
-
-/* ─── CUSTOM SCROLLBAR ───────────────────────────────────────────────── */
-.existing-bookmark::-webkit-scrollbar {
-  width: 3px;
-}
-
-.existing-bookmark::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.existing-bookmark::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--primary) 35%, transparent);
-  border-radius: 4px;
+  color: var(--primary) !important;
+  text-decoration: underline;
 }
