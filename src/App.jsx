@@ -9,14 +9,20 @@ import { GoogleGenAI } from "@google/genai";
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
 
-async function GeminiCall(projs, urls, setLoading, setRelevantLinks,getTitleByUrl) {
+async function GeminiCall(
+  projs,
+  urls,
+  setLoading,
+  setRelevantLinks,
+  getTitleByUrl,
+) {
   if (!projs?.length || !urls?.length) return;
 
   setLoading(true);
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       systemInstruction: {
         role: "system",
         parts: [
@@ -24,39 +30,42 @@ async function GeminiCall(projs, urls, setLoading, setRelevantLinks,getTitleByUr
             text: `OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.
             
             
-You are a JSON Data Processing Engine.
+You are a JSON Data Processing Engine BASED ON CONTEXT MAPPING.
 
 TASK:
-  MAP PROJECT NAMES  against URLS based on the context match of title and descriptions of projects and url objects RETURN ONLY the mapped object and NO PREAMBLE NO MARKDOWN.
+  MAP PROJECT NAMES  against URLS based on the context match of title and descriptions of projects and url objects even if Mapping exists. RETURN ONLY the mapped object and NO PREAMBLE NO MARKDOWN.
 
 RULES:
-  1.REUSE OF LINKS: You may reuse a link IF relevant to more than one project. 
-  - Judge relevance in this order project_details -> project name. with url DESCRIPTION -> url title
-  2.STRICT MATCHING: Rejects unrelated content that do not relate to the current project(e.g. Music videos or Content videos for Coding projects).
-  3.If UNSURE of the relevance REJECT the url for the current project.
+  1. REUSE OF LINKS: You may reuse a link if it is relevant to multiple projects.
+  2. CONTEXTUAL RELEVANCE: strictly analyze the intent.(MAIN TASK)
+   - compare URL metadata with PROJECT NAME AND PROJ DESCRIPTION...
+   - If a project is "Listen to Music", THEN music videos ARE relevant.
+   - If a project is "Learn React", THEN music videos are NOT relevant.
+  3. STRICT FORMAT: Return ONLY the raw JSON object. No Markdown. No Preamble.
+  4. If unrelevant ONLY THEN Reject URL for CURRENT PROJECT
   4.STRICTLY RETURN ONLY OBJECT NOTHING ELSE`,
           },
         ],
       },
       // CHANGE ONLY THE GENERATION CONFIG
-generationConfig: {
-  responseMimeType: "application/json",
-  temperature: 0,
-  responseSchema: {
-    type: "ARRAY",
-    items: {
-      type: "OBJECT",
-      properties: {
-        projectId: { type: "STRING" },
-        relevantUrls: { 
-          type: "ARRAY", 
-          items: { type: "STRING" } 
-        }
+      generationConfig: {
+        responseMimeType: "application/json",
+        temperature: 0.3,
+        responseSchema: {
+          type: "ARRAY",
+          items: {
+            type: "OBJECT",
+            properties: {
+              projectId: { type: "STRING" },
+              relevantUrls: {
+                type: "ARRAY",
+                items: { type: "STRING" },
+              },
+            },
+            required: ["projectId", "relevantUrls"],
+          },
+        },
       },
-      required: ["projectId", "relevantUrls"]
-    }
-  }
-},
       contents: [
         {
           role: "user",
@@ -87,40 +96,40 @@ generationConfig: {
       .trim();
 
     const result = JSON.parse(cleanJson);
-    await setRelevantLinks(result,getTitleByUrl)
-    console.log(result)
+    await setRelevantLinks(result, getTitleByUrl);
+    console.log(result);
   } catch (error) {
     console.error("Gemini Error:", error);
   } finally {
     setLoading(false);
   }
-
-
 }
 
 const listModels = async () => {
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`,
+  );
   const data = await response.json();
-  console.log("Available models:", data.models.map(m => m.name));
+  console.log(
+    "Available models:",
+    data.models.map((m) => m.name),
+  );
 };
 
-
-
 async function setRelevantLinks(matches, getTitleByUrl) {
-  const entries=Object.entries(matches)
-  console.log(entries)
+  const entries = Object.entries(matches);
+  console.log(entries);
   for (const entry of entries) {
-    const projectId=entry[0];
-    const titleToUrlMap=getTitleByUrl(entry[1])
-    
-    
-    console.log("Saving Mapped Object:",titleToUrlMap );
-    
+    const projectId = entry[0];
+    const titleToUrlMap = getTitleByUrl(entry[1]);
+
+    console.log("Saving Mapped Object:", titleToUrlMap);
+
     const { error } = await supabase
-    .from("Projects")
-    .update({links: titleToUrlMap })
-    .eq("proj_id", projectId);
-    
+      .from("Projects")
+      .update({ links: titleToUrlMap })
+      .eq("proj_id", projectId);
+
     if (error) {
       console.error("Supabase Error:", error.message);
     }
@@ -132,28 +141,32 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [bookmarkLinks, setBookmarkLinks] = useState([]);
   const [projs, setProjs] = useState([]);
-  
+
   function getTitleByUrl(urlsToFind) {
-    const Titleobj={}
-    for(let ur of urlsToFind){
-      bookmarkLinks.find((obj)=>{
-        if(obj.url===ur){
-          Titleobj[obj.title]=ur;
+    const Titleobj = {};
+    for (let ur of urlsToFind) {
+      bookmarkLinks.find((obj) => {
+        if (obj.url === ur) {
+          Titleobj[obj.title] = ur;
         }
-      })
+      });
     }
-    return Titleobj
-}
+    return Titleobj;
+  }
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setCurrentUser(session?.user ?? null);
       setLoading(false);
     };
 
     getSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setCurrentUser(session?.user ?? null);
       setLoading(false);
     });
@@ -162,9 +175,12 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div className="loading-spinner">Loading your workspace...
-      <div className="prog-bar"></div>
-    </div>;
+    return (
+      <div className="loading-spinner">
+        Loading your workspace...
+        <div className="prog-bar"></div>
+      </div>
+    );
   }
 
   if (currentUser) {
@@ -172,7 +188,9 @@ function App() {
       <>
         <div className="navBar">
           <div>
-            <h1>Knowledge <span className="title-accent">auditor</span></h1>
+            <h1>
+              Knowledge <span className="title-accent">auditor</span>
+            </h1>
             <h3>Welcome, {currentUser.user_metadata?.full_name || "User"}</h3>
           </div>
 
@@ -194,7 +212,13 @@ function App() {
             id="callGemini"
             className="primary-button"
             onClick={() => {
-              GeminiCall(projs, bookmarkLinks, setLoading, setRelevantLinks,getTitleByUrl);
+              GeminiCall(
+                projs,
+                bookmarkLinks,
+                setLoading,
+                setRelevantLinks,
+                getTitleByUrl,
+              );
             }}
           >
             Map Links

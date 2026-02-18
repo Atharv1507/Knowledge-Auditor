@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
@@ -15,26 +15,32 @@ async function fetchdata(setTasks, setProjs) {
   }
 }
 
-async function handelLinkDel(id, title, setTasks, setProjs) {
+async function handelLinkDel(id, title, setTasks,setProjs) {
+
+  if (!id) {
+    console.warn("Operation aborted: ID is missing.");
+    return;
+  }
+
   const { data, error } = await supabase
     .from("Projects")
     .select("links")
     .eq("proj_id", id)
     .single();
 
-  if (error) {
-    console.error("Fetch Error:", error);
+  if (error || !data) {
+    console.error("Fetch Error or No Data:", error);
     return;
   }
 
-  let updatedLinks = { ...data.links };
+  // 3. SAFE UPDATE: Use optional chaining and nullish coalescing
+  let updatedLinks = { ...(data?.links ?? {}) };
 
-  if (updatedLinks && updatedLinks[title]) {
+  if (updatedLinks[title]) {
     delete updatedLinks[title];
   }
 
-  const finalValue =
-    Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
+  const finalValue = Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
 
   const { error: updateError } = await supabase
     .from("Projects")
@@ -43,8 +49,9 @@ async function handelLinkDel(id, title, setTasks, setProjs) {
 
   if (updateError) {
     console.error("Delete Error:", updateError);
-  } else {
-    await fetchdata(setTasks, setProjs);
+  } 
+  else {
+    await fetchdata(setTasks,setProjs);
   }
 }
 async function handleLinkDrop(
@@ -75,6 +82,7 @@ async function handleLinkDrop(
 
 function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
+  const[popUp,setPopUp]=useState(false)
   const [showTaskModal, setTaskModal] = useState(false);
   const [expandId, setExpandId] = useState("");
   const [sorterVal, setSorterVal] = useState({
@@ -84,7 +92,7 @@ function Task({ setProjs }) {
   });
   useEffect(() => {
     fetchdata(setTasks, setProjs);
-  }, [showTaskModal]);
+  }, [showTaskModal,popUp]);
 
   async function handleTaskAdd() {
     setTaskModal(true);
@@ -249,12 +257,12 @@ function Task({ setProjs }) {
                                     className="trash_icon"
                                     data-id={task.proj_id}
                                     data-title={title}
-                                    onClick={(e, setList) => {
+                                    onClick={(e) => {
+
                                       handelLinkDel(
-                                        e.target.dataset.id,
-                                        e.target.dataset.title,
-                                        setTasks,
-                                        setProjs,
+                                        task.proj_id,
+                                        title,
+                                        setProjs,setTasks
                                       );
                                     }}
                                   >
@@ -285,6 +293,7 @@ function Task({ setProjs }) {
           })}
         </ul>
       </div>
+      {popUp && <h1>This is task</h1>}
     </div>
   );
 }
