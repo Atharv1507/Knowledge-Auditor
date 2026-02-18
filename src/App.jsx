@@ -33,7 +33,7 @@ async function GeminiCall(
 You are a JSON Data Processing Engine BASED ON CONTEXT MAPPING.
 
 TASK:
-  MAP PROJECT NAMES  against URLS based on the context match of title and descriptions of projects and url objects even if Mapping exists. RETURN ONLY the mapped object and NO PREAMBLE NO MARKDOWN.
+  MAP PROJECT NAMES  against URLS based on the context match of title and descriptions of projects and url objects. RETURN ONLY the mapped object and NO PREAMBLE NO MARKDOWN.
 
 RULES:
   1. REUSE OF LINKS: You may reuse a link if it is relevant to multiple projects.
@@ -71,7 +71,7 @@ RULES:
           role: "user",
           parts: [
             {
-              text: `.Return ONLY the mapped OBJECT as follows. {project_id:[urls.url]}
+              text: `.Return ONLY the mapped OBJECT as follows. {project_id:[urls.url]}.ALWAYS Check Relevance for ALL PROJECTS AND LINKS
               PROJECTS: ${JSON.stringify(projs)}
               CONTENT: ${JSON.stringify(urls)}`,
             },
