@@ -15,7 +15,7 @@ async function fetchdata(setTasks, setProjs) {
   }
 }
 
-async function handelDel(id, title, setTasks, setProjs) {
+async function handelLinkDel(id, title, setTasks, setProjs) {
   const { data, error } = await supabase
     .from("Projects")
     .select("links")
@@ -250,7 +250,7 @@ function Task({ setProjs }) {
                                     data-id={task.proj_id}
                                     data-title={title}
                                     onClick={(e, setList) => {
-                                      handelDel(
+                                      handelLinkDel(
                                         e.target.dataset.id,
                                         e.target.dataset.title,
                                         setTasks,
@@ -271,11 +271,11 @@ function Task({ setProjs }) {
                                 </li>
                               );
                             } else {
-                              return <p>No links found</p>;
+                              return ;
                             }
                           })
                         ) : (
-                          <p>No links found</p>
+                          <p>Drag and Drop Links Here</p>
                         )}
                       </ul>
                     </div>

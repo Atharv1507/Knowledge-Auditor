@@ -78,7 +78,7 @@ html, body, #root {
 }
 
 .primary-button:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-bottom-width: 4px;
 }
 
