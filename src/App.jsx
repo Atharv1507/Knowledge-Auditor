@@ -117,7 +117,7 @@ async function setRelevantLinks(matches, getTitleByUrl) {
     console.log("Saving Mapped Object:",titleToUrlMap );
     
     const { error } = await supabase
-    .from("Tasks")
+    .from("Projects")
     .update({links: titleToUrlMap })
     .eq("proj_id", projectId);
     
@@ -162,7 +162,9 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div className="loading-spinner">Loading your workspace...</div>;
+    return <div className="loading-spinner">Loading your workspace...
+      <div className="prog-bar"></div>
+    </div>;
   }
 
   if (currentUser) {

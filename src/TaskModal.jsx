@@ -2,6 +2,7 @@ import { useRef } from "react";
 import "./Task.css";
 import { supabase } from "./supaBaseClient";
 
+const today = new Date().toISOString().split("T")[0];
 function TaskModal({ setTaskModal }) {
   const nameRef = useRef();
   const dateRef = useRef();
@@ -45,7 +46,7 @@ function TaskModal({ setTaskModal }) {
     <div className="task-modal-container">
       <div className="taskHeader">
         <h1>Add a New Project </h1>
-        <button id='exit' onClick={()=>{setTaskModal(false)}}>X</button>
+        <button id='exit' onClick={()=>{setTaskModal(false)}}>x</button>
       </div>
 
       <form
@@ -66,8 +67,8 @@ function TaskModal({ setTaskModal }) {
           />
         </div>
         <div className="inputGroup">
-          <label htmlFor="due_by">Created on</label>
-          <input type="date" id="due_by" ref={dateRef} max={today} defaultValue={today} />
+          <label htmlFor="due_by">Due by</label>
+          <input type="date" id="due_by" ref={dateRef} min={today} defaultValue={today} />
         </div>
 
         <div className="inputGroup">
