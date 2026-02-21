@@ -2,8 +2,9 @@ import { use, useEffect, useState } from "react";
 import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
-import { AuthWeakPasswordError } from "@supabase/supabase-js";
 import ShowPopup from "./popUp";
+import { useRef, useCallback } from 'react';
+
 
 async function fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentType) {
   const { data, error } = await supabase.from("Projects").select();
@@ -19,7 +20,26 @@ async function fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentT
   }
 }
 
-async function handelLinkDel(id, title, setTasks,setProjs,setPopUp,setPopupContent,setContentType) {
+async function handleProjDel(id,setTasks,setProjs,setPopUp,setPopupContent,setContentType) {
+  console.log("deleting",id)
+  const{data,error}=await supabase.from("Projects").delete()
+    .eq("proj_id",id)
+  if (error) {
+    console.error(error);
+    setPopUp(true)
+    setContentType('Error')
+    setPopupContent("Please verify your internet connection.")
+  } 
+  else {
+    await fetchdata(setTasks,setProjs);
+    setPopUp(true)
+    setContentType('info')
+    setPopupContent("The Project was removed")
+  }
+
+}
+
+async function handleLinkDel(id, title, setTasks,setProjs,setPopUp,setPopupContent,setContentType) {
 
   if (!id) {
     console.warn("Operation aborted: ID is missing.");
@@ -103,6 +123,29 @@ async function handleLinkDrop(
   }
 }
 
+const useLongPress = (setTasks,setProjs,setPopUp,setPopupContent,setContentType,callback, ms = 500) => {
+  const timerRef = useRef();
+
+  const start = useCallback((id) => {
+    // We pass the id into the timeout
+    timerRef.current = setTimeout(() => {
+      callback(id,setTasks,setProjs,setPopUp,setPopupContent,setContentType); 
+    }, ms);
+  }, [callback, ms]);
+
+  const stop = useCallback(() => {
+    clearTimeout(timerRef.current);
+  }, []);
+
+  return (id) => ({
+    onMouseDown: () => start(id),
+    onMouseUp: stop,
+    onMouseLeave: stop,
+    onTouchStart: () => start(id),
+    onTouchEnd: stop,
+  });
+};
+
 function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
   const[popUp,setPopUp]=useState(false)
@@ -116,6 +159,7 @@ function Task({ setProjs }) {
 
   const [contentType,setContentType]=useState('')
   const [Popupcontent ,setPopupContent]=useState('')
+  const deleteOnLongPress=useLongPress(setTasks,setProjs,setPopUp,setPopupContent,setContentType,handleProjDel,500);
 
   useEffect(() => {
     fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentType);
@@ -152,7 +196,7 @@ function Task({ setProjs }) {
         <div className="sorter">
           {Object.keys(sorterVal).map((val) => {
             return (
-              <div key={val} className="sorter-item">
+              <div key={val} className="sorter-item" >
                 <label htmlFor={val}>
                   <span
                     className="priority-badge"
@@ -193,6 +237,7 @@ function Task({ setProjs }) {
               return (
                 <div
                   key={task.proj_id}
+                  {...deleteOnLongPress(task.proj_id)}
                   className="existing-tasks-item"
                   // 1. Allow dropping
                   onDragOver={(e) => e.preventDefault()}
@@ -287,7 +332,7 @@ function Task({ setProjs }) {
                                     data-title={title}
                                     onClick={(e) => {
 
-                                      handelLinkDel(
+                                      handleLinkDel(
                                         task.proj_id,
                                         title,
                                         setProjs,setTasks
