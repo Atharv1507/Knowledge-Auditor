@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
-import ShowPopup from "./popUp";
+import ShowPopup from "./PopUp";
 
 const useLongPress = (callback, ms = 500) => {
   const timerRef = useRef();
