@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import AuthPage from "./Auth/Authpage.jsx";
 import { supabase } from "./supaBaseClient";
 import { GoogleGenAI } from "@google/genai";
+import TutorialModal from "./Turtorial.jsx";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
@@ -141,6 +142,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [bookmarkLinks, setBookmarkLinks] = useState([]);
   const [projs, setProjs] = useState([]);
+  const [tutorialActive ,setTutorialActive]=useState(false)
 
   function getTitleByUrl(urlsToFind) {
     const Titleobj = {};
@@ -182,6 +184,9 @@ function App() {
       </div>
     );
   }
+  if(tutorialActive){
+    return(<TutorialModal setTutorialActive={setTutorialActive}/>)
+  }
 
   if (currentUser) {
     return (
@@ -193,7 +198,7 @@ function App() {
             </h1>
             <h3>Welcome, {currentUser.user_metadata?.full_name || "User"}</h3>
           </div>
-
+          <button className="primary-button" onClick={()=>setTutorialActive(true)}>Tutorial</button>
           <button
             className="primary-button"
             onClick={() => supabase.auth.signOut()}
@@ -221,8 +226,7 @@ function App() {
               );
             }}
           >
-            Map Links
-          </button>
+Auto Categorize Bookmarks          </button>
         </div>
       </>
     );

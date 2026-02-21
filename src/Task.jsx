@@ -1,135 +1,15 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
 import ShowPopup from "./popUp";
-import { useRef, useCallback } from 'react';
 
-
-async function fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentType) {
-  const { data, error } = await supabase.from("Projects").select();
-  if (error) {
-    console.error(error);
-    setPopUp(true)
-    setContentType('Error')
-    setPopupContent("Please verify your internet connection.")
-  } else {
-    console.log(data);
-    setTasks(data);
-    setProjs(data);
-  }
-}
-
-async function handleProjDel(id,setTasks,setProjs,setPopUp,setPopupContent,setContentType) {
-  console.log("deleting",id)
-  const{data,error}=await supabase.from("Projects").delete()
-    .eq("proj_id",id)
-  if (error) {
-    console.error(error);
-    setPopUp(true)
-    setContentType('Error')
-    setPopupContent("Please verify your internet connection.")
-  } 
-  else {
-    await fetchdata(setTasks,setProjs);
-    setPopUp(true)
-    setContentType('info')
-    setPopupContent("The Project was removed")
-  }
-
-}
-
-async function handleLinkDel(id, title, setTasks,setProjs,setPopUp,setPopupContent,setContentType) {
-
-  if (!id) {
-    console.warn("Operation aborted: ID is missing.");
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("Projects")
-    .select("links")
-    .eq("proj_id", id)
-    .single();
-
-  if (error || !data) {
-    console.error("Fetch Error or No Data:", error);
-    setPopUp(true)
-    setContentType('Error')
-    setPopupContent("There was an error.")
-    return;
-  }
-
-  // 3. SAFE UPDATE: Use optional chaining and nullish coalescing
-  let updatedLinks = { ...(data?.links ?? {}) };
-
-  if (updatedLinks[title]) {
-    delete updatedLinks[title];
-  }
-
-  const finalValue = Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
-
-  const { error: updateError } = await supabase
-    .from("Projects")
-    .update({ links: finalValue })
-    .eq("proj_id", id).select();
-
-  if (updateError) {
-    console.error("Delete Error:", updateError);
-    setPopUp(true)
-    setContentType('error')
-    setPopupContent("There was an error")
-  } 
-  else {
-    await fetchdata(setTasks,setProjs);
-    setPopUp(true)
-    setContentType('info')
-    setPopupContent("The Bookmark was removed")
-  }
-}
-async function handleLinkDrop(
-  taskId,
-  rawData,
-  existingLinks,
-  setTasks,
-  setProjs,
-  setPopUp,setPopupContent,setContentType
-) {
-  const { title, url } = JSON.parse(rawData);
-
-  const updatedLinks = {
-    ...(existingLinks || {}),
-    [title]: url,
-  };
-
-  const { error } = await supabase
-    .from("Projects")
-    .update({ links: updatedLinks })
-    .eq("proj_id", taskId);
-
-  if (error) {
-    console.error("Error updating links:", error);
-    setPopUp(true)
-    setContentType('Error')
-    console.log(error)
-    setPopupContent(error.message)
-
-  } 
-  else {
-    await fetchdata(setTasks, setProjs);
-    setPopUp(true)
-    setContentType('info')
-    setPopupContent("The Bookmark was added")  
-  }
-}
-
-const useLongPress = (setTasks,setProjs,setPopUp,setPopupContent,setContentType,callback, ms = 500) => {
+const useLongPress = (callback, ms = 500) => {
   const timerRef = useRef();
 
   const start = useCallback((id) => {
-    // We pass the id into the timeout
     timerRef.current = setTimeout(() => {
-      callback(id,setTasks,setProjs,setPopUp,setPopupContent,setContentType); 
+      callback(id); 
     }, ms);
   }, [callback, ms]);
 
@@ -148,7 +28,7 @@ const useLongPress = (setTasks,setProjs,setPopUp,setPopupContent,setContentType,
 
 function Task({ setProjs }) {
   const [tasks, setTasks] = useState([]);
-  const[popUp,setPopUp]=useState(false)
+  const [popUp, setPopUp] = useState(false);
   const [showTaskModal, setTaskModal] = useState(false);
   const [expandId, setExpandId] = useState("");
   const [sorterVal, setSorterVal] = useState({
@@ -157,13 +37,118 @@ function Task({ setProjs }) {
     Low: true,
   });
 
-  const [contentType,setContentType]=useState('')
-  const [Popupcontent ,setPopupContent]=useState('')
-  const deleteOnLongPress=useLongPress(setTasks,setProjs,setPopUp,setPopupContent,setContentType,handleProjDel,500);
+  const [contentType, setContentType] = useState('');
+  const [Popupcontent, setPopupContent] = useState('');
+
+  // --- Functions shifted inside ---
+
+  async function fetchdata() {
+    const { data, error } = await supabase.from("Projects").select();
+    if (error) {
+      console.error(error);
+      setPopUp(true);
+      setContentType('Error');
+      setPopupContent("Please verify your internet connection.");
+    } else {
+      console.log(data);
+      setTasks(data);
+      setProjs(data);
+    }
+  }
+
+  async function handleProjDel(id) {
+    console.log("deleting", id);
+    const { data, error } = await supabase.from("Projects").delete().eq("proj_id", id);
+    if (error) {
+      console.error(error);
+      setPopUp(true);
+      setContentType('Error');
+      setPopupContent("Please verify your internet connection.");
+    } else {
+      await fetchdata();
+      setPopUp(true);
+      setContentType('info');
+      setPopupContent("The Project was removed");
+    }
+  }
+
+  async function handleLinkDel(id, title) {
+    if (!id) {
+      console.warn("Operation aborted: ID is missing.");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("Projects")
+      .select("links")
+      .eq("proj_id", id)
+      .single();
+
+    if (error || !data) {
+      console.error("Fetch Error or No Data:", error);
+      setPopUp(true);
+      setContentType('Error');
+      setPopupContent("There was an error.");
+      return;
+    }
+
+    let updatedLinks = { ...(data?.links ?? {}) };
+
+    if (updatedLinks[title]) {
+      delete updatedLinks[title];
+    }
+
+    const finalValue = Object.keys(updatedLinks).length === 0 ? null : updatedLinks;
+
+    const { error: updateError } = await supabase
+      .from("Projects")
+      .update({ links: finalValue })
+      .eq("proj_id", id).select();
+
+    if (updateError) {
+      console.error("Delete Error:", updateError);
+      setPopUp(true);
+      setContentType('error');
+      setPopupContent("There was an error");
+    } else {
+      await fetchdata();
+      setPopUp(true);
+      setContentType('info');
+      setPopupContent("The Bookmark was removed");
+    }
+  }
+
+  async function handleLinkDrop(taskId, rawData, existingLinks) {
+    const { title, url } = JSON.parse(rawData);
+
+    const updatedLinks = {
+      ...(existingLinks || {}),
+      [title]: url,
+    };
+
+    const { error } = await supabase
+      .from("Projects")
+      .update({ links: updatedLinks })
+      .eq("proj_id", taskId);
+
+    if (error) {
+      console.error("Error updating links:", error);
+      setPopUp(true);
+      setContentType('Error');
+      setPopupContent(error.message);
+    } else {
+      await fetchdata();
+      setPopUp(true);
+      setContentType('info');
+      setPopupContent("The Bookmark was added");
+    }
+  }
+
+  const deleteOnLongPress = useLongPress(handleProjDel, 500);
 
   useEffect(() => {
-    fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentType);
-  }, [showTaskModal,popUp]);
+    fetchdata();
+  }, [showTaskModal, popUp]);
 
   async function handleTaskAdd() {
     setTaskModal(true);
@@ -182,14 +167,15 @@ function Task({ setProjs }) {
     };
     return pColors[pC];
   }
+
   const handleChange = (e) => {
     const { id, checked } = e.target;
-
     setSorterVal((prevState) => ({
       ...prevState,
       [id]: checked,
     }));
   };
+
   return (
     <div className="task-container">
       <div className="task-container-header">
@@ -239,21 +225,12 @@ function Task({ setProjs }) {
                   key={task.proj_id}
                   {...deleteOnLongPress(task.proj_id)}
                   className="existing-tasks-item"
-                  // 1. Allow dropping
                   onDragOver={(e) => e.preventDefault()}
-                  // 2. Handle the drop
                   onDrop={(e) => {
                     e.preventDefault();
                     const data = e.dataTransfer.getData("application/json");
                     if (data) {
-                      handleLinkDrop(
-                        task.proj_id,
-                        data,
-                        task.links,
-                        setTasks,
-                        setProjs,
-                        setPopUp,setPopupContent,setContentType
-                      );
+                      handleLinkDrop(task.proj_id, data, task.links);
                     }
                   }}
                   onClick={() => {
@@ -328,16 +305,9 @@ function Task({ setProjs }) {
                                     viewBox="0 0 15 15 "
                                     fill="currentColor"
                                     className="trash_icon"
-                                    data-id={task.proj_id}
-                                    data-title={title}
                                     onClick={(e) => {
-
-                                      handleLinkDel(
-                                        task.proj_id,
-                                        title,
-                                        setProjs,setTasks
-                                        ,setPopUp,setPopupContent,setContentType
-                                      );
+                                      e.stopPropagation();
+                                      handleLinkDel(task.proj_id, title);
                                     }}
                                   >
                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
@@ -352,9 +322,8 @@ function Task({ setProjs }) {
                                   </a>
                                 </li>
                               );
-                            } else {
-                              return ;
                             }
+                            return null;
                           })
                         ) : (
                           <p>Drag and Drop Links Here</p>
@@ -364,21 +333,20 @@ function Task({ setProjs }) {
                   </div>
                 </div>
               );
+            return null;
           })}
         </ul>
-
       </div>
 
       {(() => {
-    if (popUp) {
-      setTimeout(()=>{
-          setPopUp(false)
-      },3000)
-
-        return <ShowPopup content={Popupcontent} contentType={contentType} />;
-    }
-    return null;
-})()}
+        if (popUp) {
+          setTimeout(() => {
+            setPopUp(false);
+          }, 3000);
+          return <ShowPopup content={Popupcontent} contentType={contentType} />;
+        }
+        return null;
+      })()}
     </div>
   );
 }
