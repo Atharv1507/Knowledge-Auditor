@@ -19,6 +19,11 @@ const TutorialModal = ({ setTutorialActive }) => {
       title: "Adding Bookmarks Manually",
       content: "Inside the 'Add Task' modal, you can manually input bookmark titles and URLs to keep your project resources organized from the start.",
       image: "📝"
+    },
+    {
+        title:"Smart Bookmarks sorting",
+        content:"Click on the Auto Categorize Button to club relevant bookmarks to Projects automatically.",
+        image:"🤖"
     }
   ];
 
