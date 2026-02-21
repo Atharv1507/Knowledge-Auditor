@@ -3,11 +3,15 @@ import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
 import { AuthWeakPasswordError } from "@supabase/supabase-js";
+import ShowPopup from "./popUp";
 
-async function fetchdata(setTasks, setProjs) {
+async function fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentType) {
   const { data, error } = await supabase.from("Projects").select();
   if (error) {
     console.error(error);
+    setPopUp(true)
+    setContentType('Error')
+    setPopupContent("Please verify your internet connection.")
   } else {
     console.log(data);
     setTasks(data);
@@ -15,7 +19,7 @@ async function fetchdata(setTasks, setProjs) {
   }
 }
 
-async function handelLinkDel(id, title, setTasks,setProjs) {
+async function handelLinkDel(id, title, setTasks,setProjs,setPopUp,setPopupContent,setContentType) {
 
   if (!id) {
     console.warn("Operation aborted: ID is missing.");
@@ -30,6 +34,9 @@ async function handelLinkDel(id, title, setTasks,setProjs) {
 
   if (error || !data) {
     console.error("Fetch Error or No Data:", error);
+    setPopUp(true)
+    setContentType('Error')
+    setPopupContent("There was an error.")
     return;
   }
 
@@ -45,13 +52,19 @@ async function handelLinkDel(id, title, setTasks,setProjs) {
   const { error: updateError } = await supabase
     .from("Projects")
     .update({ links: finalValue })
-    .eq("proj_id", id);
+    .eq("proj_id", id).select();
 
   if (updateError) {
     console.error("Delete Error:", updateError);
+    setPopUp(true)
+    setContentType('error')
+    setPopupContent("There was an error")
   } 
   else {
     await fetchdata(setTasks,setProjs);
+    setPopUp(true)
+    setContentType('info')
+    setPopupContent("The Bookmark was removed")
   }
 }
 async function handleLinkDrop(
@@ -60,6 +73,7 @@ async function handleLinkDrop(
   existingLinks,
   setTasks,
   setProjs,
+  setPopUp,setPopupContent,setContentType
 ) {
   const { title, url } = JSON.parse(rawData);
 
@@ -75,8 +89,17 @@ async function handleLinkDrop(
 
   if (error) {
     console.error("Error updating links:", error);
-  } else {
+    setPopUp(true)
+    setContentType('Error')
+    console.log(error)
+    setPopupContent(error.message)
+
+  } 
+  else {
     await fetchdata(setTasks, setProjs);
+    setPopUp(true)
+    setContentType('info')
+    setPopupContent("The Bookmark was added")  
   }
 }
 
@@ -90,8 +113,12 @@ function Task({ setProjs }) {
     Medium: true,
     Low: true,
   });
+
+  const [contentType,setContentType]=useState('')
+  const [Popupcontent ,setPopupContent]=useState('')
+
   useEffect(() => {
-    fetchdata(setTasks, setProjs);
+    fetchdata(setTasks, setProjs,setPopUp,setPopupContent,setContentType);
   }, [showTaskModal,popUp]);
 
   async function handleTaskAdd() {
@@ -180,6 +207,7 @@ function Task({ setProjs }) {
                         task.links,
                         setTasks,
                         setProjs,
+                        setPopUp,setPopupContent,setContentType
                       );
                     }
                   }}
@@ -263,6 +291,7 @@ function Task({ setProjs }) {
                                         task.proj_id,
                                         title,
                                         setProjs,setTasks
+                                        ,setPopUp,setPopupContent,setContentType
                                       );
                                     }}
                                   >
@@ -292,8 +321,19 @@ function Task({ setProjs }) {
               );
           })}
         </ul>
+
       </div>
-      {popUp && <h1>This is task</h1>}
+
+      {(() => {
+    if (popUp) {
+      setTimeout(()=>{
+          setPopUp(false)
+      },3000)
+
+        return <ShowPopup content={Popupcontent} contentType={contentType} />;
+    }
+    return null;
+})()}
     </div>
   );
 }
