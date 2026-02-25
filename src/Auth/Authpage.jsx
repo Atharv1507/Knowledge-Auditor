@@ -2,7 +2,7 @@
     import { useRef, useState } from "react";
     import "./auth.css";
 
-    function AuthPage({ setLoading, setCurrentUser }) {
+    function AuthPage({ setLoading, setCurrentUser, setLoginPageActive ,setLandingPageActive}) {
         const [isSignup, setIfSignup] = useState(true);
         const emailref = useRef();
         const usernameref = useRef();
@@ -58,6 +58,10 @@
         <div className="authHeader">
             <h1>{isSignup ? "Create Account" : "Welcome Back"}</h1>
             <p>{isSignup ? "Join Knowledge Auditor today" : "Log in to your dashboard"}</p>
+            <button className="toggleBtn" onClick={()=>{setLandingPageActive(true); setLoginPageActive(false)}}>
+                <i className="fa-solid fa-arrow-left"></i>
+                Back to Landing Page
+            </button>
         </div>
 
         <form className="authForm" onSubmit={(e)=>{e.preventDefault(); handleUser()}} >

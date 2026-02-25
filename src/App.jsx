@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import AuthPage from "./Auth/Authpage.jsx";
 import { supabase } from "./supaBaseClient";
 import { GoogleGenAI } from "@google/genai";
+import LandingPage from "./LandingPage.jsx";
 import TutorialModal from "./Turtorial.jsx";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -143,6 +144,8 @@ function App() {
   const [bookmarkLinks, setBookmarkLinks] = useState([]);
   const [projs, setProjs] = useState([]);
   const [tutorialActive ,setTutorialActive]=useState(false)
+  const [landingPageActive, setLandingPageActive] = useState(true);
+  const [loginPageActive, setLoginPageActive] = useState(false);
 
   function getTitleByUrl(urlsToFind) {
     const Titleobj = {};
@@ -183,6 +186,9 @@ function App() {
         <div className="prog-bar"></div>
       </div>
     );
+  }
+  if (landingPageActive){
+    return(<LandingPage setLandingPageActive={setLandingPageActive} setLoginPageActive={setLoginPageActive}/>);
   }
   if(tutorialActive){
     return(<TutorialModal setTutorialActive={setTutorialActive}/>)
@@ -232,7 +238,7 @@ Auto Categorize Bookmarks          </button>
     );
   }
 
-  return <AuthPage setLoading={setLoading} setCurrentUser={setCurrentUser} />;
+  return <AuthPage setLoading={setLoading} setCurrentUser={setCurrentUser} setLoginPageActive={setLoginPageActive} setLandingPageActive={setLandingPageActive} />;
 }
 
 export default App;
