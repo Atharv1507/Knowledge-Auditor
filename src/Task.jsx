@@ -3,6 +3,7 @@ import "./Task.css";
 import { supabase } from "./supaBaseClient";
 import TaskModal from "./TaskModal";
 import ShowPopup from "./PopUp";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 
 const useLongPress = (callback, ms = 500) => {
   const timerRef = useRef();
@@ -39,6 +40,7 @@ function Task({ setProjs }) {
 
   const [contentType, setContentType] = useState('');
   const [Popupcontent, setPopupContent] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
   // --- Functions shifted inside ---
 
@@ -144,7 +146,21 @@ function Task({ setProjs }) {
     }
   }
 
-  const deleteOnLongPress = useLongPress(handleProjDel, 500);
+  function handleLongPressDelete(id) {
+    setConfirmDeleteId(id);
+  }
+
+  async function confirmProjDel() {
+    if (!confirmDeleteId) return;
+    await handleProjDel(confirmDeleteId);
+    setConfirmDeleteId(null);
+  }
+
+  function cancelProjDel() {
+    setConfirmDeleteId(null);
+  }
+
+  const deleteOnLongPress = useLongPress(handleLongPressDelete, 500);
 
   useEffect(() => {
     fetchdata();
@@ -215,6 +231,13 @@ function Task({ setProjs }) {
       </div>
 
       {showTaskModal && <TaskModal setTaskModal={setTaskModal} />}
+      {confirmDeleteId && (
+        <ConfirmDeleteModal
+          projectName={tasks.find((t) => t.proj_id === confirmDeleteId)?.project_name}
+          onConfirm={confirmProjDel}
+          onCancel={cancelProjDel}
+        />
+      )}
       <div className="existing-tasks">
         <h3>Your tasks</h3>
         <ul className="existing-tasks-list">
